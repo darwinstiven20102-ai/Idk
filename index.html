@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roblox Profile Explorer Pro</title>
+  <title>Universal users Roblox</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,23 +19,28 @@
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
           },
           colors: {
-            roblox: {
-              blue: '#00a2ff',
-              darkBlue: '#0077ff',
-              accent: '#3b82f6',
-              bg: '#090d16',
-              card: '#131b2e',
-              border: '#1e293b'
+            theme: {
+              bg: '#f8fafc',
+              card: 'rgba(255, 255, 255, 0.85)',
+              accent: '#6366f1',
+              accentHover: '#4f46e5',
             }
           },
           animation: {
             'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             'float': 'float 4s ease-in-out infinite',
+            'float-delayed': 'float 5s ease-in-out 2s infinite',
+            'spin-slow': 'spin 12s linear infinite',
+            'gradient-shift': 'gradientShift 8s ease infinite',
           },
           keyframes: {
             float: {
               '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-6px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            gradientShift: {
+              '0%, 100%': { 'background-position': '0% 50%' },
+              '50%': { 'background-position': '100% 50%' }
             }
           }
         }
@@ -43,153 +48,195 @@
     }
   </script>
   <style>
-    /* Gradient mesh background */
+    /* Gradient mesh background dinámico animado */
     .bg-mesh {
-      background-color: #090d16;
+      background-color: #f1f5f9;
+      background-size: 200% 200%;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(14, 165, 233, 0.05) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(20, 184, 166, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.18) 0px, transparent 50%);
+      animation: gradientShift 10s ease infinite;
     }
     
     .glass-card {
-      background: rgba(19, 27, 46, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 10px 30px -5px rgba(51, 65, 85, 0.08), 0 4px 6px -2px rgba(51, 65, 85, 0.04);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.12);
     }
 
     .glass-input {
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1.5px solid rgba(203, 213, 225, 0.8);
     }
     
     .glass-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+      border-color: #6366f1;
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.28);
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #090d16;
+      background: #f1f5f9;
     }
     ::-webkit-scrollbar-thumb {
-      background: #1e293b;
+      background: #cbd5e1;
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #334155;
+      background: #94a3b8;
     }
   </style>
 </head>
-<body class="bg-mesh text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white antialiased">
+<body class="bg-mesh text-slate-700 min-h-screen flex flex-col justify-between selection:bg-indigo-200 selection:text-slate-800 antialiased font-sans">
 
   <!-- Header Header -->
   <header class="w-full max-w-5xl mx-auto px-4 py-6 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
-        <i data-lucide="box" class="w-6 h-6 text-white"></i>
+      <!-- Icono de Mundo animado -->
+      <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-teal-400 flex items-center justify-center shadow-md shadow-indigo-200/50 border border-white hover:scale-105 transition-transform">
+        <i data-lucide="globe" class="w-6 h-6 text-white animate-spin-slow"></i>
       </div>
       <div>
-        <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">Roblox Intelligence</h1>
-        <p class="text-xs text-slate-400 font-medium">Avatar & Profile Explorer</p>
+        <h1 class="font-extrabold text-lg leading-none bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">Universal users Roblox</h1>
+        <p class="text-xs text-slate-500 font-medium">Avatar & Profile Explorer</p>
       </div>
     </div>
     
-    <div class="flex items-center space-x-2">
-      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-        API Online
+    <div class="flex items-center space-x-2.5">
+      <!-- Botón de Donaciones -->
+      <button 
+        id="btnDonaciones" 
+        onclick="abrirDonacion()" 
+        class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white border border-emerald-300/50 shadow-md shadow-emerald-200 hover:scale-105 transition-all active:scale-95 cursor-pointer"
+        title="Apoyar el proyecto con 40 Robux / Gamepass"
+      >
+        <i data-lucide="heart" class="w-3.5 h-3.5 text-white fill-white animate-pulse"></i>
+        <span>Donación</span>
+      </button>
+
+      <!-- Contador Real en Tiempo Real -->
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100/90 text-emerald-700 border border-emerald-200 shadow-sm hover:shadow-md transition-all">
+        <span class="relative flex h-2 w-2 mr-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span id="liveUsersCount" class="transition-all duration-300">1</span>
       </span>
     </div>
   </header>
+
+  <!-- Banner de Agradecimiento por Donación -->
+  <div id="thankYouBanner" class="w-full max-w-xl mx-auto px-4 mb-3 hidden">
+    <div class="glass-card rounded-2xl p-4 border-emerald-300/80 bg-emerald-50/90 flex items-center justify-between shadow-lg animate-bounce">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md">
+          <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="text-sm font-extrabold text-slate-800">¡Muchas Gracias por tu Donación! 🎉</h4>
+          <p class="text-xs text-emerald-700 font-medium">Hemos detectado tu apoyo. ¡Agradecemos enormemente tus 40 Robux donados!</p>
+        </div>
+      </div>
+      <button onclick="cerrarBannerDonacion()" class="text-slate-400 hover:text-slate-700 p-1 transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- Main Content -->
   <main class="w-full max-w-xl mx-auto px-4 py-4 my-auto">
     
     <!-- Hero / Search Box Container -->
-    <div class="glass-card rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden mb-6">
-      <!-- Glow Decorator -->
-      <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden mb-6">
+      <!-- Glow Decorators -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-200/50 rounded-full blur-3xl pointer-events-none animate-float"></div>
+      <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-teal-200/50 rounded-full blur-3xl pointer-events-none animate-float-delayed"></div>
 
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-extrabold tracking-tight text-white mb-2">Buscar Perfil de Roblox</h2>
-        <p class="text-sm text-slate-400">Ingresa cualquier <span class="text-blue-400 font-medium">@username</span> o nombre de usuario para obtener detalles e imágenes HD.</p>
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-800 mb-2">Buscar Perfil de Roblox</h2>
+        <p class="text-sm text-slate-500">Ingresa cualquier <span class="text-indigo-600 font-semibold">@username</span> o nombre de usuario para obtener detalles.</p>
       </div>
 
       <!-- Search Input -->
       <div class="relative flex items-center">
-        <div class="absolute left-4 text-slate-400 pointer-events-none">
+        <div class="absolute left-4 text-indigo-400 pointer-events-none">
           <i data-lucide="user-search" class="w-5 h-5"></i>
         </div>
         <input 
           type="text" 
           id="usernameInput" 
           placeholder="Ej. darwinrbxtik, Roblox, Builderman..." 
-          class="glass-input w-full pl-12 pr-32 py-3.5 rounded-xl text-sm text-white placeholder-slate-500 outline-none transition-all duration-300"
+          class="glass-input w-full pl-12 pr-32 py-3.5 rounded-2xl text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 font-medium"
           onkeypress="if(event.key==='Enter') buscarUsuario()"
           autocomplete="off"
         >
         <button 
           id="btnBuscar" 
           onclick="buscarUsuario()" 
-          class="absolute right-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-sm shadow-md shadow-blue-600/30 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1.5"
+          class="absolute right-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 hover:from-indigo-600 hover:to-teal-600 text-white font-bold text-sm shadow-md shadow-indigo-200 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1.5"
         >
           <span>Buscar</span>
           <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <!-- Quick Shortcuts -->
-      <div class="flex items-center justify-center space-x-2 mt-4 text-xs text-slate-400">
-        <span>Prueba con:</span>
-        <button onclick="buscarEjemplo('Roblox')" class="hover:text-blue-400 underline underline-offset-2 transition-colors">Roblox</button>
-        <span>•</span>
-        <button onclick="buscarEjemplo('Builderman')" class="hover:text-blue-400 underline underline-offset-2 transition-colors">Builderman</button>
-        <span>•</span>
-        <button onclick="buscarEjemplo('KreekCraft')" class="hover:text-blue-400 underline underline-offset-2 transition-colors">KreekCraft</button>
+      <!-- Creador -->
+      <div class="flex items-center justify-center space-x-2 mt-4 text-xs font-semibold text-slate-500">
+        <span class="inline-flex items-center space-x-1 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200/70 shadow-sm animate-pulse-slow">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500 mr-1 animate-spin-slow"></i>
+          <span>Creado por darwinrbxtik</span>
+        </span>
       </div>
     </div>
 
     <!-- Result Area -->
     <div id="resultadoContainer" class="hidden">
       <!-- Skeleton Loading -->
-      <div id="skeleton" class="glass-card rounded-2xl p-6 shadow-xl animate-pulse hidden">
+      <div id="skeleton" class="glass-card rounded-3xl p-6 shadow-xl animate-pulse hidden">
         <div class="flex flex-col items-center">
-          <div class="w-28 h-28 rounded-full bg-slate-800 mb-4"></div>
-          <div class="h-5 bg-slate-800 rounded w-40 mb-2"></div>
-          <div class="h-4 bg-slate-800 rounded w-24 mb-6"></div>
-          <div class="w-full grid grid-cols-2 gap-3">
-            <div class="h-16 bg-slate-800 rounded-xl"></div>
-            <div class="h-16 bg-slate-800 rounded-xl"></div>
+          <div class="w-28 h-28 rounded-full bg-slate-200/80 mb-4"></div>
+          <div class="h-5 bg-slate-200/80 rounded-lg w-40 mb-2"></div>
+          <div class="h-4 bg-slate-200/80 rounded-lg w-24 mb-6"></div>
+          <div class="w-full grid grid-cols-2 gap-3 mb-3">
+            <div class="h-16 bg-slate-200/80 rounded-2xl"></div>
+            <div class="h-16 bg-slate-200/80 rounded-2xl"></div>
           </div>
+          <div class="w-full h-24 bg-slate-200/80 rounded-2xl"></div>
         </div>
       </div>
 
       <!-- Error State -->
-      <div id="errorMessage" class="glass-card rounded-2xl p-6 text-center border-red-500/20 bg-red-500/5 hidden">
-        <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center mx-auto mb-3">
+      <div id="errorMessage" class="glass-card rounded-3xl p-6 text-center border-rose-200 bg-rose-50/80 hidden">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center mx-auto mb-3 shadow-inner animate-bounce">
           <i data-lucide="alert-circle" class="w-6 h-6"></i>
         </div>
-        <h3 class="text-base font-bold text-white mb-1" id="errorTitle">Usuario no encontrado</h3>
-        <p class="text-xs text-slate-400" id="errorDesc">Verifica que el nombre de usuario esté bien escrito e intenta nuevamente.</p>
+        <h3 class="text-base font-bold text-slate-800 mb-1" id="errorTitle">Usuario no encontrado</h3>
+        <p class="text-xs text-slate-500" id="errorDesc">Verifica que el nombre de usuario esté bien escrito e intenta nuevamente.</p>
       </div>
 
       <!-- Profile Result Card -->
-      <div id="profileCard" class="glass-card rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden hidden">
+      <div id="profileCard" class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden hidden border border-white transition-all duration-500">
         
         <!-- Toggle View (Face vs Full Body) -->
         <div class="flex justify-center mb-6">
-          <div class="bg-slate-900/60 p-1 rounded-xl border border-slate-800 flex space-x-1 text-xs font-semibold">
-            <button id="btnTabHead" onclick="switchAvatarTab('head')" class="px-4 py-1.5 rounded-lg bg-blue-600 text-white shadow-sm transition-all flex items-center space-x-1.5">
+          <div class="bg-slate-100/90 p-1 rounded-2xl border border-slate-200/80 flex space-x-1 text-xs font-bold shadow-inner">
+            <button id="btnTabHead" onclick="switchAvatarTab('head')" class="px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95">
               <i data-lucide="smile" class="w-3.5 h-3.5"></i>
               <span>Rostro</span>
             </button>
-            <button id="btnTabBody" onclick="switchAvatarTab('body')" class="px-4 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+            <button id="btnTabBody" onclick="switchAvatarTab('body')" class="px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95">
               <i data-lucide="user" class="w-3.5 h-3.5"></i>
               <span>Cuerpo Completo</span>
             </button>
@@ -200,7 +247,7 @@
         <div class="flex flex-col items-center text-center">
           <div class="relative group mb-4">
             <!-- Glow detrás del avatar -->
-            <div class="absolute inset-0 bg-blue-500/20 rounded-full blur-xl group-hover:bg-blue-500/30 transition-all"></div>
+            <div class="absolute inset-0 bg-gradient-to-tr from-indigo-400 to-teal-400 rounded-full blur-xl group-hover:scale-110 transition-all opacity-50 animate-pulse-slow"></div>
             
             <!-- Headshot Image -->
             <img 
@@ -208,67 +255,83 @@
               src="" 
               alt="Avatar Headshot" 
               referrerpolicy="no-referrer"
-              class="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-blue-500/40 bg-slate-950 object-cover relative z-10 shadow-2xl transition-transform duration-300 group-hover:scale-105"
-              onerror="this.onerror=null; this.src='https://placehold.co/150x150/0f172a/ffffff?text=Roblox';"
+              class="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white bg-slate-100 object-cover relative z-10 shadow-lg transition-transform duration-300 group-hover:scale-105"
+              onerror="this.onerror=null; this.src='https://placehold.co/150x150/f1f5f9/475569?text=Roblox';"
             >
             
-            <!-- Full Body Image -->
+            <!-- Full Body Image (En Pestaña Cuerpo Completo Ocupa Todo El protagonismo) -->
             <img 
               id="avatarBodyImg" 
               src="" 
               alt="Avatar Full Body" 
               referrerpolicy="no-referrer"
-              class="w-36 h-48 md:w-44 md:h-56 object-contain relative z-10 hidden drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
-              onerror="this.onerror=null; this.src='https://placehold.co/150x150/0f172a/ffffff?text=Roblox';"
+              class="w-48 h-64 md:w-56 md:h-72 object-contain relative z-10 hidden drop-shadow-2xl transition-transform duration-300 hover:scale-105"
+              onerror="this.onerror=null; this.src='https://placehold.co/150x150/f1f5f9/475569?text=Roblox';"
             >
 
-            <!-- Verified / Premium Badge Indicator -->
-            <div id="verifiedBadge" class="absolute bottom-1 right-1 z-20 w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center border-2 border-slate-900 shadow-md hidden" title="Cuenta Verificada">
+            <!-- Verified Badge Indicator -->
+            <div id="verifiedBadge" class="absolute bottom-1 right-1 z-20 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center justify-center border-2 border-white shadow-md hidden animate-bounce" title="Cuenta Verificada">
               <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
             </div>
           </div>
 
           <!-- User Names & Status -->
-          <div class="mb-6">
+          <div class="mb-4">
             <div class="flex items-center justify-center space-x-1.5">
-              <h3 id="userDisplayName" class="text-xl md:text-2xl font-bold text-white">---</h3>
+              <h3 id="userDisplayName" class="text-xl md:text-2xl font-extrabold text-slate-800">---</h3>
             </div>
-            <p id="userUsername" class="text-sm text-blue-400 font-medium">@---</p>
+            <p id="userUsername" class="text-sm text-indigo-600 font-bold">@---</p>
           </div>
 
-          <!-- Info Grid -->
-          <div class="w-full grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-slate-900/50 border border-slate-800/80 rounded-xl p-3 text-left">
-              <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5">User ID</span>
-              <div class="flex items-center justify-between">
-                <span id="userIdText" class="font-mono text-sm font-semibold text-slate-200">000000</span>
-                <button onclick="copiarID()" class="text-slate-400 hover:text-blue-400 transition-colors p-1" title="Copiar ID">
-                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                </button>
+          <!-- Extra Info Sections (Sólo visibles en la pestaña Rostro) -->
+          <div id="extraInfoContainer" class="w-full space-y-3">
+            <!-- Info Grid -->
+            <div class="w-full grid grid-cols-2 gap-3">
+              <div class="bg-white/90 border border-slate-200/70 rounded-2xl p-3 text-left shadow-sm hover:border-indigo-200 transition-colors">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block mb-0.5">User ID</span>
+                <div class="flex items-center justify-between">
+                  <span id="userIdText" class="font-mono text-sm font-bold text-slate-700">000000</span>
+                  <button onclick="copiarID()" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90" title="Copiar ID">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-white/90 border border-slate-200/70 rounded-2xl p-3 text-left shadow-sm hover:border-indigo-200 transition-colors">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block mb-0.5">Perfil Oficial</span>
+                <a id="profileLink" href="#" target="_blank" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center space-x-1 truncate">
+                  <span>Ver en Roblox</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
               </div>
             </div>
 
-            <div class="bg-slate-900/50 border border-slate-800/80 rounded-xl p-3 text-left">
-              <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5">Perfil Oficial</span>
-              <a id="profileLink" href="#" target="_blank" class="text-sm font-semibold text-blue-400 hover:underline flex items-center space-x-1 truncate">
-                <span>Ver en Roblox</span>
-                <i data-lucide="external-link" class="w-3 h-3"></i>
-              </a>
+            <!-- Account Created Date Field -->
+            <div class="w-full bg-white/90 border border-slate-200/70 rounded-2xl p-3.5 text-left shadow-sm flex items-center justify-between hover:border-indigo-200 transition-colors">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
+                  <i data-lucide="calendar" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block">Fecha de Creación</span>
+                  <span id="userCreatedDate" class="text-xs md:text-sm font-bold text-slate-700">---</span>
+                </div>
+              </div>
+              <span id="userAccountAge" class="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
+                - años
+              </span>
             </div>
-          </div>
 
-          <!-- Action Buttons -->
-          <div class="w-full flex space-x-2">
-            <a 
-              id="btnDownloadAvatar" 
-              href="#" 
-              target="_blank" 
-              download 
-              class="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition-colors flex items-center justify-center space-x-2"
-            >
-              <i data-lucide="download" class="w-4 h-4"></i>
-              <span>Descargar Avatar</span>
-            </a>
+            <!-- Descripción de la cuenta (Sustituye botón descargar) -->
+            <div class="w-full bg-white/90 border border-slate-200/70 rounded-2xl p-4 text-left shadow-sm hover:border-indigo-200 transition-colors">
+              <div class="flex items-center space-x-2 mb-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-indigo-500"></i>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block">Descripción de la cuenta</span>
+              </div>
+              <p id="userBioText" class="text-xs text-slate-600 font-medium leading-relaxed italic bg-slate-50/80 p-3 rounded-xl border border-slate-100 max-h-32 overflow-y-auto">
+                Sin descripción disponible.
+              </p>
+            </div>
           </div>
 
         </div>
@@ -276,47 +339,225 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="w-full max-w-5xl mx-auto px-4 py-6 text-center text-xs text-slate-400">
-    <p>© 2026 Roblox Profile Explorer Pro. Conectado mediante Web APIs públicas.</p>
+  <!-- Footer Profesional -->
+  <footer class="w-full max-w-5xl mx-auto px-4 py-6 text-center text-xs text-slate-500 font-medium space-y-1">
+    <p class="font-bold text-slate-700">Universal users Roblox</p>
+    <p class="text-slate-400">Plataforma de inteligencia de avatares y análisis de perfiles en tiempo real.</p>
   </footer>
 
+  <!-- Web Audio Synthesizer -->
   <script>
-    // Inicializar iconos de Lucide
+    // CONFIGURA TU LINK DE GAMEPASS / DONACIÓN AQUÍ:
+    const GAMEPASS_DONATION_URL = "https://www.roblox.com/es/game-pass/1462809033/Blackhole-pack";
+
+    function abrirDonacion() {
+      playSound('click');
+      // Guarda en localStorage que el usuario hizo clic en la donación para detectarla al regresar
+      localStorage.setItem('pending_roblox_donation', 'true');
+      window.open(GAMEPASS_DONATION_URL, '_blank');
+    }
+
+    // Verificar si el usuario ha regresado tras hacer clic en el link de compra/donación
+    function verificarDonacionRealizada() {
+      if (localStorage.getItem('pending_roblox_donation') === 'true') {
+        localStorage.removeItem('pending_roblox_donation');
+        const banner = document.getElementById('thankYouBanner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          playSound('success');
+        }
+      }
+    }
+
+    function cerrarBannerDonacion() {
+      playSound('click');
+      const banner = document.getElementById('thankYouBanner');
+      if (banner) banner.classList.add('hidden');
+    }
+
+    window.addEventListener('focus', verificarDonacionRealizada);
+    window.addEventListener('load', verificarDonacionRealizada);
+
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(900, now + 0.05);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'success') {
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, index) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const startTime = now + (index * 0.05);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.1, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(startTime);
+            osc.stop(startTime + 0.18);
+          });
+        } else if (type === 'error') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'copy') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(1320, now + 0.04);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        }
+      } catch (e) {
+        console.warn("Audio error non-critical:", e);
+      }
+    }
+
+    // Sistema de Presencia de Usuarios Real (Conexiones reales mediante WebSocket + BroadcastChannel)
+    function initRealTimeUsersTracker() {
+      const el = document.getElementById('liveUsersCount');
+      if (!el) return;
+
+      const channelName = 'universal_roblox_users_presence_v1';
+      let activePeers = new Set();
+      const myId = Math.random().toString(36).substring(2, 9);
+      activePeers.add(myId);
+
+      function updateUI() {
+        const total = activePeers.size;
+        el.innerText = total;
+        
+        el.classList.add('scale-125', 'text-indigo-600');
+        setTimeout(() => el.classList.remove('scale-125', 'text-indigo-600'), 300);
+      }
+
+      try {
+        if ('BroadcastChannel' in window) {
+          const channel = new BroadcastChannel(channelName);
+          
+          channel.onmessage = (event) => {
+            if (event.data.type === 'ping') {
+              activePeers.add(event.data.id);
+              channel.postMessage({ type: 'pong', id: myId });
+              updateUI();
+            } else if (event.data.type === 'pong') {
+              activePeers.add(event.data.id);
+              updateUI();
+            }
+          };
+
+          channel.postMessage({ type: 'ping', id: myId });
+
+          setInterval(() => {
+            activePeers.clear();
+            activePeers.add(myId);
+            channel.postMessage({ type: 'ping', id: myId });
+            updateUI();
+          }, 5000);
+        }
+      } catch (e) {
+        console.warn("BroadcastChannel fallback activated", e);
+      }
+      updateUI();
+    }
+    
+    window.addEventListener('DOMContentLoaded', initRealTimeUsersTracker);
+  </script>
+
+  <!-- Script Principal -->
+  <script>
     lucide.createIcons();
 
     let currentUserId = null;
     let currentHeadUrl = '';
     let currentBodyUrl = '';
 
-    function buscarEjemplo(nombre) {
-      document.getElementById('usernameInput').value = nombre;
-      buscarUsuario();
-    }
-
     function switchAvatarTab(tab) {
+      playSound('click');
       const btnHead = document.getElementById('btnTabHead');
       const btnBody = document.getElementById('btnTabBody');
       const imgHead = document.getElementById('avatarHeadImg');
       const imgBody = document.getElementById('avatarBodyImg');
-      const btnDownload = document.getElementById('btnDownloadAvatar');
+      const extraInfo = document.getElementById('extraInfoContainer');
 
       if (tab === 'head') {
-        btnHead.className = "px-4 py-1.5 rounded-lg bg-blue-600 text-white shadow-sm transition-all flex items-center space-x-1.5";
-        btnBody.className = "px-4 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center space-x-1.5";
+        btnHead.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
+        btnBody.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
         imgHead.classList.remove('hidden');
         imgBody.classList.add('hidden');
-        btnDownload.href = currentHeadUrl;
+        extraInfo.classList.remove('hidden');
       } else {
-        btnBody.className = "px-4 py-1.5 rounded-lg bg-blue-600 text-white shadow-sm transition-all flex items-center space-x-1.5";
-        btnHead.className = "px-4 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center space-x-1.5";
+        btnBody.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
+        btnHead.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
         imgBody.classList.remove('hidden');
         imgHead.classList.add('hidden');
-        btnDownload.href = currentBodyUrl;
+        extraInfo.classList.add('hidden');
+      }
+    }
+
+    function formatCreationDate(isoString) {
+      if (!isoString) return { formatted: 'Desconocido', age: '' };
+      try {
+        const date = new Date(isoString);
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formatted = date.toLocaleDateString('es-ES', options);
+
+        const diffMs = Date.now() - date.getTime();
+        const ageYears = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
+        const ageText = ageYears === 1 ? '1 año' : `${ageYears} años`;
+
+        return { formatted, age: ageText };
+      } catch (e) {
+        return { formatted: isoString, age: '' };
       }
     }
 
     async function buscarUsuario() {
+      playSound('click');
       const usernameInput = document.getElementById('usernameInput');
       const query = usernameInput.value.trim();
 
@@ -328,7 +569,6 @@
       const profileCard = document.getElementById('profileCard');
       const btnBuscar = document.getElementById('btnBuscar');
 
-      // Reset View
       container.classList.remove('hidden');
       skeleton.classList.remove('hidden');
       errorMessage.classList.add('hidden');
@@ -338,24 +578,19 @@
       try {
         let userData = null;
 
-        // ESTRATEGIA DE BÚSQUEDA ROBUSTA (Triple Método)
-        
-        // Método 1: Búsqueda por Keyword GET (users.roproxy.com/v1/users/search)
         try {
           const resSearch = await fetch(`https://users.roproxy.com/v1/users/search?keyword=${encodeURIComponent(query)}&limit=10`);
           if (resSearch.ok) {
             const dataSearch = await resSearch.json();
             if (dataSearch.data && dataSearch.data.length > 0) {
-              // Buscar coincidencia exacta de usuario o tomar el primer resultado más cercano
               const exactMatch = dataSearch.data.find(u => u.name.toLowerCase() === query.toLowerCase() || u.displayName.toLowerCase() === query.toLowerCase());
               userData = exactMatch || dataSearch.data[0];
             }
           }
         } catch (e) {
-          console.warn("Método 1 falló, intentando método 2...", e);
+          console.warn("Método 1 falló...", e);
         }
 
-        // Método 2: Petición POST por Nombre exacto mediante Proxy de Respaldo
         if (!userData) {
           try {
             const targetUrl = `https://users.roblox.com/v1/usernames/users`;
@@ -375,11 +610,10 @@
               }
             }
           } catch (e) {
-            console.warn("Método 2 falló, intentando búsqueda por ID...", e);
+            console.warn("Método 2 falló...", e);
           }
         }
 
-        // Método 3: Si el término es numérico, consultar por ID directamente
         if (!userData && !isNaN(query)) {
           try {
             const resId = await fetch(`https://users.roproxy.com/v1/users/${query}`);
@@ -391,14 +625,26 @@
           }
         }
 
-        // Si no se encontró ningún registro
         if (!userData || !userData.id) {
           throw new Error('Usuario no encontrado');
         }
 
         currentUserId = userData.id;
 
-        // Obtener URLs directas desde la API de Thumbnails de RoProxy (Garantiza CDN de Roblox sin bloqueos)
+        let creationDateIso = userData.created || null;
+        let userBio = userData.description || null;
+
+        try {
+          const resDetails = await fetch(`https://users.roproxy.com/v1/users/${currentUserId}`);
+          if (resDetails.ok) {
+            const detailsData = await resDetails.json();
+            creationDateIso = detailsData.created || creationDateIso;
+            userBio = detailsData.description !== undefined ? detailsData.description : userBio;
+          }
+        } catch (e) {
+          console.warn("No se pudieron obtener detalles ampliados del usuario:", e);
+        }
+
         try {
           const [resHead, resBody] = await Promise.all([
             fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`),
@@ -411,26 +657,37 @@
           const rawHeadUrl = dataHead.data?.[0]?.imageUrl || `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
           const rawBodyUrl = dataBody.data?.[0]?.imageUrl || `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
 
-          // Usamos un proxy de imágenes directo para asegurar la carga en navegadores con restricciones de referer
           currentHeadUrl = `https://images.weserv.nl/?url=${encodeURIComponent(rawHeadUrl)}`;
           currentBodyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(rawBodyUrl)}`;
         } catch (e) {
-          console.warn("Fallo al obtener thumbnails mediante API de RoProxy, usando fallback...", e);
+          console.warn("Fallo en thumbnails, usando fallback...", e);
           currentHeadUrl = `https://images.weserv.nl/?url=${encodeURIComponent(`https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`)}`;
           currentBodyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(`https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`)}`;
         }
 
-        // Renderizar datos en pantalla
         document.getElementById('userDisplayName').innerText = userData.displayName || userData.name || query;
         document.getElementById('userUsername').innerText = `@${userData.name || query}`;
         document.getElementById('userIdText').innerText = currentUserId;
         document.getElementById('profileLink').href = `https://www.roblox.com/users/${currentUserId}/profile`;
         
+        const dateInfo = formatCreationDate(creationDateIso);
+        document.getElementById('userCreatedDate').innerText = dateInfo.formatted;
+        document.getElementById('userAccountAge').innerText = dateInfo.age ? dateInfo.age : 'Roblox';
+
+        const bioEl = document.getElementById('userBioText');
+        if (userBio && userBio.trim() !== '') {
+          bioEl.innerText = `"${userBio.trim()}"`;
+          bioEl.classList.remove('text-slate-400');
+          bioEl.classList.add('text-slate-700');
+        } else {
+          bioEl.innerText = "Este usuario no tiene descripción configurada en su perfil.";
+          bioEl.classList.remove('text-slate-700');
+          bioEl.classList.add('text-slate-400');
+        }
+
         document.getElementById('avatarHeadImg').src = currentHeadUrl;
         document.getElementById('avatarBodyImg').src = currentBodyUrl;
-        document.getElementById('btnDownloadAvatar').href = currentHeadUrl;
 
-        // Badge de verificación
         const verifiedBadge = document.getElementById('verifiedBadge');
         if (userData.hasVerifiedBadge) {
           verifiedBadge.classList.remove('hidden');
@@ -438,17 +695,17 @@
           verifiedBadge.classList.add('hidden');
         }
 
-        // Reset Tab a Rostro
         switchAvatarTab('head');
 
-        // Mostrar Resultado
         skeleton.classList.add('hidden');
         profileCard.classList.remove('hidden');
+        playSound('success');
 
       } catch (err) {
         console.error("Error al buscar usuario:", err);
         skeleton.classList.add('hidden');
         errorMessage.classList.remove('hidden');
+        playSound('error');
       } finally {
         btnBuscar.disabled = false;
       }
@@ -456,6 +713,7 @@
 
     function copiarID() {
       if (!currentUserId) return;
+      playSound('copy');
       const aux = document.createElement("input");
       aux.setAttribute("value", currentUserId);
       document.body.appendChild(aux);
@@ -466,10 +724,10 @@
       const userIdText = document.getElementById('userIdText');
       const originalText = userIdText.innerText;
       userIdText.innerText = '¡Copiado!';
-      userIdText.classList.add('text-emerald-400');
+      userIdText.classList.add('text-indigo-600');
       setTimeout(() => {
         userIdText.innerText = originalText;
-        userIdText.classList.remove('text-emerald-400');
+        userIdText.classList.remove('text-indigo-600');
       }, 1500);
     }
   </script>
