@@ -32,6 +32,10 @@
             'float-delayed': 'float 5s ease-in-out 2s infinite',
             'spin-slow': 'spin 12s linear infinite',
             'gradient-shift': 'gradientShift 8s ease infinite',
+            'shake-crazy': 'shakeCrazy 0.15s ease-in-out infinite',
+            'crazy-all': 'crazyAll 0.6s ease-in-out infinite alternate',
+            'crazy-spin': 'crazySpin 1.5s linear infinite',
+            'crazy-bounce': 'crazyBounce 0.4s ease-in-out infinite alternate',
           },
           keyframes: {
             float: {
@@ -41,6 +45,26 @@
             gradientShift: {
               '0%, 100%': { 'background-position': '0% 50%' },
               '50%': { 'background-position': '100% 50%' }
+            },
+            shakeCrazy: {
+              '0%, 100%': { transform: 'translate(0, 0) rotate(0deg)' },
+              '20%': { transform: 'translate(-8px, 8px) rotate(-6deg)' },
+              '40%': { transform: 'translate(8px, -6px) rotate(6deg)' },
+              '60%': { transform: 'translate(-6px, -6px) rotate(-4deg)' },
+              '80%': { transform: 'translate(6px, 6px) rotate(4deg)' }
+            },
+            crazyAll: {
+              '0%': { transform: 'scale(1) rotate(-3deg) skew(2deg)', filter: 'hue-rotate(0deg)' },
+              '100%': { transform: 'scale(1.05) rotate(3deg) skew(-2deg)', filter: 'hue-rotate(360deg)' }
+            },
+            crazySpin: {
+              '0%': { transform: 'rotate(0deg) scale(1)' },
+              '50%': { transform: 'rotate(180deg) scale(1.15)' },
+              '100%': { transform: 'rotate(360deg) scale(1)' }
+            },
+            crazyBounce: {
+              '0%': { transform: 'translateY(0) scale(1)' },
+              '100%': { transform: 'translateY(-20px) scale(1.1)' }
             }
           }
         }
@@ -84,35 +108,40 @@
       box-shadow: 0 0 25px rgba(99, 102, 241, 0.28);
     }
 
-    /* Estilos para el Modo Rating (Tema de Colores Alternativo) */
-    body.rating-mode {
-      background-color: #1e1b4b;
+    /* Estilos para el modo Ranking */
+    body.ranking-crazy-mode {
+      background: #0f172a;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(217, 70, 239, 0.25) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.25) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.25) 0px, transparent 50%),
-        radial-gradient(at 0% 100%, rgba(236, 72, 153, 0.25) 0px, transparent 50%);
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.15) 50%, transparent 100%);
+      animation: gradientShift 15s ease infinite;
       color: #f8fafc;
     }
 
-    body.rating-mode .glass-card {
-      background: rgba(30, 27, 75, 0.85);
-      border-color: rgba(245, 158, 11, 0.4);
-      box-shadow: 0 10px 35px -5px rgba(245, 158, 11, 0.2);
+    body.ranking-crazy-mode .glass-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 20px 50px -10px rgba(99, 102, 241, 0.3);
     }
 
-    body.rating-mode .glass-input {
-      background: rgba(15, 23, 42, 0.85);
-      border-color: rgba(245, 158, 11, 0.4);
+    body.ranking-crazy-mode .glass-input {
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+    }
+
+    body.ranking-crazy-mode h2, body.ranking-crazy-mode h3, body.ranking-crazy-mode h4 {
       color: #ffffff;
     }
 
-    body.rating-mode h2, body.rating-mode h3, body.rating-mode h4 {
-      color: #ffffff;
-    }
-
-    body.rating-mode p {
+    body.ranking-crazy-mode p {
       color: #cbd5e1;
+    }
+
+    body.ranking-crazy-mode img {
+      animation: float 4s ease-in-out infinite !important;
+      border: 4px solid rgba(168, 85, 247, 0.6) !important;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4) !important;
     }
 
     ::-webkit-scrollbar {
@@ -125,9 +154,6 @@
       background: #cbd5e1;
       border-radius: 9999px;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
   </style>
 </head>
 <body class="bg-mesh text-slate-700 min-h-screen flex flex-col justify-between selection:bg-indigo-200 selection:text-slate-800 antialiased font-sans">
@@ -135,35 +161,34 @@
   <!-- Header Header -->
   <header class="w-full max-w-5xl mx-auto px-4 py-6 flex items-center justify-between">
     <div class="flex items-center space-x-3">
-      <!-- Icono de Mundo interactivo que abre/cierra la estrella -->
+      <!-- Icono de Mundo interactivo que abre/cierra el menú -->
       <div class="relative group">
         <button 
           onclick="toggleStarMenu()" 
           class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-teal-400 flex items-center justify-center shadow-md shadow-indigo-200/50 border border-white hover:scale-105 transition-all duration-300 active:scale-95 cursor-pointer"
-          title="Tocar para mostrar estrella"
+          title="Tocar para mostrar opciones de navegación"
         >
           <i id="globeIcon" data-lucide="globe" class="w-6 h-6 text-white animate-spin-slow transition-all"></i>
         </button>
 
-        <!-- Menú Desplegable con la Estrella -->
+        <!-- Menú Desplegable con Ranking e Inicio -->
         <div id="starMenu" class="hidden absolute top-14 left-0 z-50 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-xl flex flex-col space-y-1.5 animate-bounce">
           <button 
-            onclick="activarModoCalificacion()" 
-            class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-600 border border-amber-200 transition-all font-bold text-xs"
-            title="Activar modo calificación"
+            onclick="irARanking()" 
+            class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-md transition-all font-extrabold text-xs"
+            title="Ir a Calificación de Avatares"
           >
-            <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-amber-400 animate-pulse"></i>
-            <span>Rating Mode</span>
+            <i data-lucide="award" class="w-4 h-4 text-white animate-bounce"></i>
+            <span>Ranking</span>
           </button>
 
-          <!-- Botón para volver al Inicio Normal -->
           <button 
-            onclick="desactivarModoCalificacion()" 
-            class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all font-bold text-xs"
-            title="Volver al modo normal"
+            onclick="irAInicio()" 
+            class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all font-bold text-xs"
+            title="Volver al Inicio"
           >
-            <i data-lucide="rotate-ccw" class="w-4 h-4 text-slate-500"></i>
-            <span>Inicio Normal</span>
+            <i data-lucide="home" class="w-4 h-4 text-slate-600"></i>
+            <span>Inicio</span>
           </button>
         </div>
       </div>
@@ -175,7 +200,6 @@
     </div>
     
     <div class="flex items-center space-x-2.5">
-      <!-- Botón de Donaciones -->
       <button 
         id="btnDonaciones" 
         onclick="abrirDonacion()" 
@@ -210,14 +234,21 @@
   <main class="w-full max-w-xl mx-auto px-4 py-4 my-auto">
     
     <!-- Hero / Search Box Container -->
-    <div class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden mb-6">
-      <!-- Glow Decorators -->
+    <div id="mainHeroContainer" class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden mb-6 transition-all">
       <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-200/50 rounded-full blur-3xl pointer-events-none animate-float"></div>
       <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-teal-200/50 rounded-full blur-3xl pointer-events-none animate-float-delayed"></div>
 
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-800 mb-2">Buscar Perfil de Roblox</h2>
-        <p class="text-sm text-slate-500">Ingresa cualquier <span class="text-indigo-600 font-semibold">@username</span> o nombre de usuario para obtener detalles.</p>
+        <h2 id="mainHeadingTitle" class="text-2xl font-extrabold tracking-tight text-slate-800 mb-2">Buscar Perfil de Roblox</h2>
+        <p id="mainHeadingDesc" class="text-sm text-slate-500 mb-3">Ingresa cualquier <span class="text-indigo-600 font-semibold">@username</span> o nombre de usuario para obtener detalles.</p>
+        
+        <!-- Historial horizontal -->
+        <div id="scoreHistoryTickerContainer" class="hidden w-full overflow-hidden bg-slate-900/60 rounded-2xl py-2 px-3 border border-purple-500/40 relative">
+          <div class="flex whitespace-nowrap animate-[marquee_15s_linear_infinite] space-x-4 items-center" id="scoreHistoryTickerContent">
+            <span class="text-xs text-purple-300 font-bold">Historial de Puntajes Recientes:</span>
+            <span class="text-xs text-amber-300 font-mono bg-purple-900/80 px-2 py-0.5 rounded-lg border border-purple-400">Ningún tiro aún</span>
+          </div>
+        </div>
       </div>
 
       <!-- Search Input -->
@@ -229,21 +260,31 @@
           type="text" 
           id="usernameInput" 
           placeholder="Ej. darwinrbxtik, Roblox, Builderman..." 
-          class="glass-input w-full pl-12 pr-32 py-3.5 rounded-2xl text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 font-medium"
+          class="glass-input w-full pl-12 pr-44 py-3.5 rounded-2xl text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 font-medium"
           onkeypress="if(event.key==='Enter') buscarUsuario()"
           autocomplete="off"
         >
-        <button 
-          id="btnBuscar" 
-          onclick="buscarUsuario()" 
-          class="absolute right-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 hover:from-indigo-600 hover:to-teal-600 text-white font-bold text-sm shadow-md shadow-indigo-200 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1.5"
-        >
-          <span>Buscar</span>
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </button>
+        <div class="absolute right-2 flex items-center space-x-1">
+          <button 
+            id="btnCancelar" 
+            onclick="cancelarBusqueda()" 
+            class="hidden px-2.5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs shadow-md transition-all active:scale-95"
+            title="Cancelar búsqueda"
+          >
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+
+          <button 
+            id="btnBuscar" 
+            onclick="buscarUsuario()" 
+            class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 hover:from-indigo-600 hover:to-teal-600 text-white font-bold text-xs md:text-sm shadow-md shadow-indigo-200 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
+          >
+            <span>Buscar</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- Creador -->
       <div class="flex items-center justify-center space-x-2 mt-4 text-xs font-semibold text-slate-500">
         <span class="inline-flex items-center space-x-1 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200/70 shadow-sm animate-pulse-slow">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500 mr-1 animate-spin-slow"></i>
@@ -254,7 +295,6 @@
 
     <!-- Result Area -->
     <div id="resultadoContainer" class="hidden">
-      <!-- Skeleton Loading -->
       <div id="skeleton" class="glass-card rounded-3xl p-6 shadow-xl animate-pulse hidden">
         <div class="flex flex-col items-center">
           <div class="w-28 h-28 rounded-full bg-slate-200/80 mb-4"></div>
@@ -268,7 +308,6 @@
         </div>
       </div>
 
-      <!-- Error State -->
       <div id="errorMessage" class="glass-card rounded-3xl p-6 text-center border-rose-200 bg-rose-50/80 hidden">
         <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center mx-auto mb-3 shadow-inner animate-bounce">
           <i data-lucide="alert-circle" class="w-6 h-6"></i>
@@ -280,8 +319,7 @@
       <!-- Profile Result Card -->
       <div id="profileCard" class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden hidden border border-white transition-all duration-500">
         
-        <!-- Toggle View (Face vs Full Body) -->
-        <div class="flex justify-center mb-6">
+        <div id="tabContainerWrapper" class="flex justify-center mb-6">
           <div class="bg-slate-100/90 p-1 rounded-2xl border border-slate-200/80 flex space-x-1 text-xs font-bold shadow-inner items-center">
             <button id="btnTabHead" onclick="switchAvatarTab('head')" class="px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95">
               <i data-lucide="smile" class="w-3.5 h-3.5"></i>
@@ -291,7 +329,6 @@
               <i data-lucide="user" class="w-3.5 h-3.5"></i>
               <span>Cuerpo Completo</span>
             </button>
-            <!-- Botón para Refrescar Búsqueda del Usuario Actual -->
             <button 
               id="btnRefreshHead" 
               onclick="refrescarRostro()" 
@@ -305,11 +342,16 @@
 
         <!-- Avatar Container -->
         <div class="flex flex-col items-center text-center">
+          
+          <div id="rankingRouletteBadge" class="mb-4 z-30 hidden">
+            <div class="px-6 py-2.5 rounded-3xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 text-white font-black text-2xl md:text-3xl shadow-2xl border-4 border-yellow-300 animate-bounce">
+              ⭐ <span id="rouletteDisplayNumber">?</span>/10 ⭐
+            </div>
+          </div>
+
           <div class="relative group mb-4">
-            <!-- Glow detrás del avatar -->
             <div class="absolute inset-0 bg-gradient-to-tr from-indigo-400 to-teal-400 rounded-full blur-xl group-hover:scale-110 transition-all opacity-50 animate-pulse-slow"></div>
             
-            <!-- Headshot Image -->
             <img 
               id="avatarHeadImg" 
               src="" 
@@ -319,7 +361,6 @@
               onerror="this.onerror=null; this.src='https://placehold.co/150x150/f1f5f9/475569?text=Roblox';"
             >
             
-            <!-- Full Body Image (En Pestaña Cuerpo Completo Ocupa Todo El protagonismo) -->
             <img 
               id="avatarBodyImg" 
               src="" 
@@ -329,29 +370,20 @@
               onerror="this.onerror=null; this.src='https://placehold.co/150x150/f1f5f9/475569?text=Roblox';"
             >
 
-            <!-- Verified Badge Indicator -->
             <div id="verifiedBadge" class="absolute bottom-1 right-1 z-20 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center justify-center border-2 border-white shadow-md hidden animate-bounce" title="Cuenta Verificada">
               <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
             </div>
           </div>
 
-          <!-- User Names & Status -->
           <div class="mb-4">
             <div class="flex items-center justify-center space-x-1.5">
               <h3 id="userDisplayName" class="text-xl md:text-2xl font-extrabold text-slate-800">---</h3>
             </div>
             <p id="userUsername" class="text-sm text-indigo-600 font-bold">@---</p>
-            
-            <!-- Apartado de Calificación / Rating (Aleatorio 1 a 10) -->
-            <div id="ratingContainer" class="mt-2.5 inline-flex items-center space-x-1.5 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-xs font-bold text-amber-700 shadow-sm hidden">
-              <i data-lucide="star" class="w-3.5 h-3.5 text-amber-500 fill-amber-400"></i>
-              <span>Rating: <span id="userRatingValue">0</span>/10</span>
-            </div>
           </div>
 
-          <!-- Extra Info Sections (Sólo visibles en la pestaña Rostro) -->
+          <!-- Extra Info Sections -->
           <div id="extraInfoContainer" class="w-full space-y-3">
-            <!-- Info Grid -->
             <div class="w-full grid grid-cols-2 gap-3">
               <div class="bg-white/90 border border-slate-200/70 rounded-2xl p-3 text-left shadow-sm hover:border-indigo-200 transition-colors">
                 <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block mb-0.5">User ID</span>
@@ -372,7 +404,6 @@
               </div>
             </div>
 
-            <!-- Account Created Date Field -->
             <div class="w-full bg-white/90 border border-slate-200/70 rounded-2xl p-3.5 text-left shadow-sm flex items-center justify-between hover:border-indigo-200 transition-colors">
               <div class="flex items-center space-x-2.5">
                 <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
@@ -388,7 +419,6 @@
               </span>
             </div>
 
-            <!-- Descripción de la cuenta (Sustituye botón descargar) -->
             <div class="w-full bg-white/90 border border-slate-200/70 rounded-2xl p-4 text-left shadow-sm hover:border-indigo-200 transition-colors">
               <div class="flex items-center space-x-2 mb-2">
                 <i data-lucide="file-text" class="w-4 h-4 text-indigo-500"></i>
@@ -413,17 +443,14 @@
 
   <!-- Web Audio Synthesizer -->
   <script>
-    // CONFIGURA TU LINK DE GAMEPASS / DONACIÓN AQUÍ:
     const GAMEPASS_DONATION_URL = "https://www.roblox.com/es/game-pass/1462809033/Blackhole-pack";
 
     function abrirDonacion() {
       playSound('click');
-      // Guarda en localStorage que el usuario hizo clic en la donación para detectarla al regresar
       localStorage.setItem('pending_roblox_donation', 'true');
       window.open(GAMEPASS_DONATION_URL, '_blank');
     }
 
-    // Verificar si el usuario ha regresado tras hacer clic en el link de compra/donación
     function verificarDonacionRealizada() {
       if (localStorage.getItem('pending_roblox_donation') === 'true') {
         localStorage.removeItem('pending_roblox_donation');
@@ -472,7 +499,7 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(450, now);
           osc.frequency.exponentialRampToValueAtTime(900, now + 0.05);
-          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.setValueAtTime(0.2, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -486,7 +513,7 @@
             const startTime = now + (index * 0.05);
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, startTime);
-            gain.gain.setValueAtTime(0.1, startTime);
+            gain.gain.setValueAtTime(0.25, startTime);
             gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.18);
             osc.connect(gain);
             gain.connect(ctx.destination);
@@ -499,7 +526,7 @@
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.linearRampToValueAtTime(110, now + 0.25);
-          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.setValueAtTime(0.25, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -511,7 +538,7 @@
           osc.type = 'sine';
           osc.frequency.setValueAtTime(880, now);
           osc.frequency.setValueAtTime(1320, now + 0.04);
-          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.setValueAtTime(0.2, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -522,56 +549,6 @@
         console.warn("Audio error non-critical:", e);
       }
     }
-
-    // Sistema de Presencia de Usuarios Real (Conexiones reales mediante WebSocket + BroadcastChannel)
-    function initRealTimeUsersTracker() {
-      const el = document.getElementById('liveUsersCount');
-      if (!el) return;
-
-      const channelName = 'universal_roblox_users_presence_v1';
-      let activePeers = new Set();
-      const myId = Math.random().toString(36).substring(2, 9);
-      activePeers.add(myId);
-
-      function updateUI() {
-        const total = activePeers.size;
-        el.innerText = total;
-        
-        el.classList.add('scale-125', 'text-indigo-600');
-        setTimeout(() => el.classList.remove('scale-125', 'text-indigo-600'), 300);
-      }
-
-      try {
-        if ('BroadcastChannel' in window) {
-          const channel = new BroadcastChannel(channelName);
-          
-          channel.onmessage = (event) => {
-            if (event.data.type === 'ping') {
-              activePeers.add(event.data.id);
-              channel.postMessage({ type: 'pong', id: myId });
-              updateUI();
-            } else if (event.data.type === 'pong') {
-              activePeers.add(event.data.id);
-              updateUI();
-            }
-          };
-
-          channel.postMessage({ type: 'ping', id: myId });
-
-          setInterval(() => {
-            activePeers.clear();
-            activePeers.add(myId);
-            channel.postMessage({ type: 'ping', id: myId });
-            updateUI();
-          }, 5000);
-        }
-      } catch (e) {
-        console.warn("BroadcastChannel fallback activated", e);
-      }
-      updateUI();
-    }
-    
-    window.addEventListener('DOMContentLoaded', initRealTimeUsersTracker);
   </script>
 
   <!-- Script Principal -->
@@ -581,9 +558,24 @@
     let currentUserId = null;
     let currentHeadUrl = '';
     let currentBodyUrl = '';
-    let isRatingModeActive = false;
+    let isRankingModeActive = false;
+    let rankingRedirectTimer = null;
+    let activeFetchController = null;
+    let recentScoresHistory = [];
+    const searchCache = new Map();
 
-    // Toggle para mostrar/ocultar el menú con la estrella al tocar el icono del universo
+    if (!document.getElementById('tickerStyle')) {
+      const styleEl = document.createElement('style');
+      styleEl.id = 'tickerStyle';
+      styleEl.innerHTML = `
+        @keyframes marquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+      `;
+      document.head.appendChild(styleEl);
+    }
+
     function toggleStarMenu() {
       playSound('click');
       const starMenu = document.getElementById('starMenu');
@@ -592,102 +584,84 @@
       }
     }
 
-    // Activar el modo de calificación y cambiar el título a inglés
-    function activarModoCalificacion() {
+    function irARanking() {
       playSound('success');
-      isRatingModeActive = true;
+      isRankingModeActive = true;
       
-      // Aplicar nueva paleta de colores a toda la página
-      document.body.classList.add('rating-mode');
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      document.body.classList.add('ranking-crazy-mode');
 
       const starMenu = document.getElementById('starMenu');
       if (starMenu) starMenu.classList.add('hidden');
 
-      const appTitle = document.getElementById('appTitle');
-      if (appTitle) {
-        appTitle.innerText = "Universal Ursulo Roblox Rating";
-      }
+      const mainHeadingTitle = document.getElementById('mainHeadingTitle');
+      const mainHeadingDesc = document.getElementById('mainHeadingDesc');
+      const tickerContainer = document.getElementById('scoreHistoryTickerContainer');
 
-      // Si ya hay un usuario en pantalla, calcular su calificación estética
-      if (currentUserId) {
-        calcularYMostrarCalificacionEstetica();
-      }
+      if (mainHeadingTitle) mainHeadingTitle.innerText = "✨ Calificación de Avatares ✨";
+      if (mainHeadingDesc) mainHeadingDesc.innerHTML = "Busca un usuario para ver su avatar y el puntaje de la ruleta del <span class='text-indigo-400 font-semibold'>1 al 10</span>.";
+      if (tickerContainer) tickerContainer.classList.remove('hidden');
+
+      document.getElementById('resultadoContainer').classList.add('hidden');
+      document.getElementById('usernameInput').value = '';
+      document.getElementById('usernameInput').focus();
     }
 
-    // Desactivar el modo rating y volver al inicio normal
-    function desactivarModoCalificacion() {
+    function irAInicio() {
       playSound('click');
-      isRatingModeActive = false;
-      
-      // Quitar paleta de colores alternativa
-      document.body.classList.remove('rating-mode');
+      isRankingModeActive = false;
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      document.body.classList.remove('ranking-crazy-mode');
 
       const starMenu = document.getElementById('starMenu');
       if (starMenu) starMenu.classList.add('hidden');
 
-      const appTitle = document.getElementById('appTitle');
-      if (appTitle) {
-        appTitle.innerText = "Universal users Roblox";
-      }
+      const mainHeadingTitle = document.getElementById('mainHeadingTitle');
+      const mainHeadingDesc = document.getElementById('mainHeadingDesc');
+      const tickerContainer = document.getElementById('scoreHistoryTickerContainer');
 
-      // Ocultar apartado de calificación
-      const ratingContainer = document.getElementById('ratingContainer');
-      if (ratingContainer) {
-        ratingContainer.classList.add('hidden');
+      if (mainHeadingTitle) mainHeadingTitle.innerText = "Buscar Perfil de Roblox";
+      if (mainHeadingDesc) mainHeadingDesc.innerHTML = "Ingresa cualquier <span class='text-indigo-600 font-semibold'>@username</span> o nombre de usuario para obtener detalles.";
+      if (tickerContainer) tickerContainer.classList.add('hidden');
+
+      document.getElementById('resultadoContainer').classList.add('hidden');
+      document.getElementById('usernameInput').value = '';
+    }
+
+    function actualizarTickerHistorial(nuevoPuntaje, username) {
+      recentScoresHistory.unshift(`${username}: ${nuevoPuntaje}/10`);
+      if (recentScoresHistory.length > 10) recentScoresHistory.pop();
+
+      const contentEl = document.getElementById('scoreHistoryTickerContent');
+      if (contentEl) {
+        let html = `<span class="text-xs text-purple-300 font-bold shrink-0">⭐ Historial:</span>`;
+        recentScoresHistory.forEach(item => {
+          html += `<span class="text-xs text-amber-300 font-mono bg-purple-900/80 px-2 py-0.5 rounded-lg border border-purple-400 shrink-0">${item}</span>`;
+        });
+        contentEl.innerHTML = html;
       }
     }
 
-    // Algoritmo que evalúa la estética y atributos del avatar/cuenta de 1 a 10
-    function calcularYMostrarCalificacionEstetica(userData = null, dateIso = null, bio = null) {
-      const ratingContainer = document.getElementById('ratingContainer');
-      const ratingValue = document.getElementById('userRatingValue');
-      if (!ratingContainer || !ratingValue) return;
-
-      let score = 5; // Puntaje base estético
-
-      if (userData) {
-        // 1. Evaluación del Nombre de Usuario (Clean design / Rareza)
-        const name = userData.name || "";
-        if (name.length <= 5) score += 2; // Nombres cortos suelen valorarse más alto
-        else if (name.length <= 8) score += 1;
-        if (!/\d/.test(name)) score += 1; // Nombres sin números se perciben más limpios
-
-        // 2. Insignia Verificada
-        if (userData.hasVerifiedBadge) score += 1.5;
-
-        // 3. Biografía y Estilo
-        if (bio && bio.trim().length > 15) score += 1;
-
-        // 4. Antigüedad de la Cuenta
-        if (dateIso) {
-          const createdYear = new Date(dateIso).getFullYear();
-          if (createdYear <= 2016) score += 1.5;
-          else if (createdYear <= 2019) score += 1;
-        }
-
-        // Variación estética ligera de seguridad
-        score += (userData.id % 2 === 0 ? 0.5 : -0.5);
-      } else {
-        score = Math.floor(Math.random() * 4) + 7;
+    function cancelarBusqueda() {
+      playSound('error');
+      if (activeFetchController) {
+        activeFetchController.abort();
+        activeFetchController = null;
       }
 
-      // Asegurar que la puntuación se mantenga en el rango estricto de 1 a 10
-      const finalRating = Math.min(10, Math.max(1, Math.round(score)));
-      ratingValue.innerText = finalRating;
-      ratingContainer.classList.remove('hidden');
-    }
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
 
-    // Función para volver a ejecutar la búsqueda del usuario actual
-    async function refrescarRostro() {
-      const refreshBtn = document.getElementById('btnRefreshHead');
-      if (refreshBtn) refreshBtn.classList.add('animate-spin');
+      const skeleton = document.getElementById('skeleton');
+      const container = document.getElementById('resultadoContainer');
+      const btnBuscar = document.getElementById('btnBuscar');
+      const btnCancelar = document.getElementById('btnCancelar');
 
-      // Vuelve a buscar el mismo usuario ingresado en el input
-      await buscarUsuario();
-
-      setTimeout(() => {
-        if (refreshBtn) refreshBtn.classList.remove('animate-spin');
-      }, 300);
+      if (skeleton) skeleton.classList.add('hidden');
+      if (container) container.classList.add('hidden');
+      if (btnBuscar) btnBuscar.disabled = false;
+      if (btnCancelar) btnCancelar.classList.add('hidden');
     }
 
     function switchAvatarTab(tab) {
@@ -699,17 +673,17 @@
       const extraInfo = document.getElementById('extraInfoContainer');
 
       if (tab === 'head') {
-        btnHead.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
-        btnBody.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
-        imgHead.classList.remove('hidden');
-        imgBody.classList.add('hidden');
-        extraInfo.classList.remove('hidden');
+        if (btnHead) btnHead.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
+        if (btnBody) btnBody.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
+        if (imgHead) imgHead.classList.remove('hidden');
+        if (imgBody) imgBody.classList.add('hidden');
+        if (!isRankingModeActive && extraInfo) extraInfo.classList.remove('hidden');
       } else {
-        btnBody.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
-        btnHead.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
-        imgBody.classList.remove('hidden');
-        imgHead.classList.add('hidden');
-        extraInfo.classList.add('hidden');
+        if (btnBody) btnBody.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
+        if (btnHead) btnHead.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
+        if (imgBody) imgBody.classList.remove('hidden');
+        if (imgHead) imgHead.classList.add('hidden');
+        if (extraInfo) extraInfo.classList.add('hidden');
       }
     }
 
@@ -730,72 +704,109 @@
       }
     }
 
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 500) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const res = await fetch(url, options);
+          if (res.ok) return res;
+          if (res.status === 429 && i < retries - 1) {
+            await new Promise(r => setTimeout(r, delay * (i + 1)));
+            continue;
+          }
+          return res;
+        } catch (err) {
+          if (err.name === 'AbortError') throw err;
+          if (i === retries - 1) throw err;
+          await new Promise(r => setTimeout(r, delay * (i + 1)));
+        }
+      }
+      throw new Error('Network request failed after retries');
+    }
+
     async function buscarUsuario() {
       playSound('click');
       const usernameInput = document.getElementById('usernameInput');
+      if (!usernameInput) return;
       const query = usernameInput.value.trim();
 
       if (!query) return;
+
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      activeFetchController = new AbortController();
+      const signal = activeFetchController.signal;
 
       const container = document.getElementById('resultadoContainer');
       const skeleton = document.getElementById('skeleton');
       const errorMessage = document.getElementById('errorMessage');
       const profileCard = document.getElementById('profileCard');
       const btnBuscar = document.getElementById('btnBuscar');
+      const btnCancelar = document.getElementById('btnCancelar');
 
-      container.classList.remove('hidden');
-      skeleton.classList.remove('hidden');
-      errorMessage.classList.add('hidden');
-      profileCard.classList.add('hidden');
-      btnBuscar.disabled = true;
+      if (container) container.classList.remove('hidden');
+      if (skeleton) skeleton.classList.remove('hidden');
+      if (errorMessage) errorMessage.classList.add('hidden');
+      if (profileCard) profileCard.classList.add('hidden');
+      if (btnBuscar) btnBuscar.disabled = true;
+      if (btnCancelar) btnCancelar.classList.remove('hidden');
 
       try {
         let userData = null;
+        const cacheKey = query.toLowerCase();
 
-        try {
-          const resSearch = await fetch(`https://users.roproxy.com/v1/users/search?keyword=${encodeURIComponent(query)}&limit=10`);
-          if (resSearch.ok) {
-            const dataSearch = await resSearch.json();
-            if (dataSearch.data && dataSearch.data.length > 0) {
-              const exactMatch = dataSearch.data.find(u => u.name.toLowerCase() === query.toLowerCase() || u.displayName.toLowerCase() === query.toLowerCase());
-              userData = exactMatch || dataSearch.data[0];
-            }
-          }
-        } catch (e) {
-          console.warn("Método 1 falló...", e);
-        }
-
-        if (!userData) {
+        if (searchCache.has(cacheKey)) {
+          userData = searchCache.get(cacheKey);
+        } else {
           try {
-            const targetUrl = `https://users.roblox.com/v1/usernames/users`;
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-            
-            const resPost = await fetch(proxyUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ usernames: [query], excludeBannedUsers: false })
-            });
-
-            if (resPost.ok) {
-              const proxyData = await resPost.json();
-              const parsed = JSON.parse(proxyData.contents);
-              if (parsed.data && parsed.data.length > 0) {
-                userData = parsed.data[0];
+            const resSearch = await fetchWithRetry(`https://users.roproxy.com/v1/users/search?keyword=${encodeURIComponent(query)}&limit=10`, { signal });
+            if (resSearch.ok) {
+              const dataSearch = await resSearch.json();
+              if (dataSearch.data && dataSearch.data.length > 0) {
+                const exactMatch = dataSearch.data.find(u => u.name.toLowerCase() === query.toLowerCase() || u.displayName.toLowerCase() === query.toLowerCase());
+                userData = exactMatch || dataSearch.data[0];
               }
             }
           } catch (e) {
-            console.warn("Método 2 falló...", e);
+            if (e.name === 'AbortError') throw e;
           }
-        }
 
-        if (!userData && !isNaN(query)) {
-          try {
-            const resId = await fetch(`https://users.roproxy.com/v1/users/${query}`);
-            if (resId.ok) {
-              userData = await resId.json();
+          if (!userData) {
+            try {
+              const targetUrl = `https://users.roblox.com/v1/usernames/users`;
+              const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+              
+              const resPost = await fetchWithRetry(proxyUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usernames: [query], excludeBannedUsers: false }),
+                signal
+              });
+
+              if (resPost.ok) {
+                const proxyData = await resPost.json();
+                const parsed = JSON.parse(proxyData.contents);
+                if (parsed.data && parsed.data.length > 0) {
+                  userData = parsed.data[0];
+                }
+              }
+            } catch (e) {
+              if (e.name === 'AbortError') throw e;
             }
-          } catch (e) {
-            console.warn("Método por ID falló:", e);
+          }
+
+          if (!userData && !isNaN(query)) {
+            try {
+              const resId = await fetchWithRetry(`https://users.roproxy.com/v1/users/${query}`, { signal });
+              if (resId.ok) {
+                userData = await resId.json();
+              }
+            } catch (e) {
+              if (e.name === 'AbortError') throw e;
+            }
+          }
+
+          if (userData && userData.id) {
+            searchCache.set(cacheKey, userData);
           }
         }
 
@@ -809,20 +820,20 @@
         let userBio = userData.description || null;
 
         try {
-          const resDetails = await fetch(`https://users.roproxy.com/v1/users/${currentUserId}`);
+          const resDetails = await fetchWithRetry(`https://users.roproxy.com/v1/users/${currentUserId}`, { signal });
           if (resDetails.ok) {
             const detailsData = await resDetails.json();
             creationDateIso = detailsData.created || creationDateIso;
             userBio = detailsData.description !== undefined ? detailsData.description : userBio;
           }
         } catch (e) {
-          console.warn("No se pudieron obtener detalles ampliados del usuario:", e);
+          if (e.name === 'AbortError') throw e;
         }
 
         try {
           const [resHead, resBody] = await Promise.all([
-            fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`),
-            fetch(`https://thumbnails.roproxy.com/v1/users/avatar?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`)
+            fetchWithRetry(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`, { signal }),
+            fetchWithRetry(`https://thumbnails.roproxy.com/v1/users/avatar?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`, { signal })
           ]);
           
           const dataHead = await resHead.json();
@@ -831,80 +842,158 @@
           const rawHeadUrl = dataHead.data?.[0]?.imageUrl;
           const rawBodyUrl = dataBody.data?.[0]?.imageUrl;
 
-          // Usar la URL directa de la API de thumbnails de Roblox si está disponible, o el servicio roproxy
-          currentHeadUrl = rawHeadUrl || `https://tr.rbxcdn.com/30bf57f9ed1c0029b4e137b0185e4281/420/420/AvatarHeadshot/Png`;
-          currentBodyUrl = rawBodyUrl || `https://tr.rbxcdn.com/30bf57f9ed1c0029b4e137b0185e4281/420/420/Avatar/Png`;
+          currentHeadUrl = rawHeadUrl || `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          currentBodyUrl = rawBodyUrl || `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
         } catch (e) {
-          console.warn("Fallo en thumbnails, usando fallback directo...", e);
-          currentHeadUrl = `https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`;
-          currentBodyUrl = `https://thumbnails.roproxy.com/v1/users/avatar?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`;
+          if (e.name === 'AbortError') throw e;
+          currentHeadUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          currentBodyUrl = `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
         }
 
-        document.getElementById('userDisplayName').innerText = userData.displayName || userData.name || query;
-        document.getElementById('userUsername').innerText = `@${userData.name || query}`;
-        document.getElementById('userIdText').innerText = currentUserId;
-        document.getElementById('profileLink').href = `https://www.roblox.com/users/${currentUserId}/profile`;
+        const dispNameEl = document.getElementById('userDisplayName');
+        const userUsrEl = document.getElementById('userUsername');
+        const userIdEl = document.getElementById('userIdText');
+        const profileLinkEl = document.getElementById('profileLink');
+
+        if (dispNameEl) dispNameEl.innerText = userData.displayName || userData.name || query;
+        if (userUsrEl) userUsrEl.innerText = `@${userData.name || query}`;
+        if (userIdEl) userIdEl.innerText = currentUserId;
+        if (profileLinkEl) profileLinkEl.href = `https://www.roblox.com/users/${currentUserId}/profile`;
         
         const dateInfo = formatCreationDate(creationDateIso);
-        document.getElementById('userCreatedDate').innerText = dateInfo.formatted;
-        document.getElementById('userAccountAge').innerText = dateInfo.age ? dateInfo.age : 'Roblox';
+        const createdDateEl = document.getElementById('userCreatedDate');
+        const accountAgeEl = document.getElementById('userAccountAge');
+        if (createdDateEl) createdDateEl.innerText = dateInfo.formatted;
+        if (accountAgeEl) accountAgeEl.innerText = dateInfo.age ? dateInfo.age : 'Roblox';
 
         const bioEl = document.getElementById('userBioText');
-        if (userBio && userBio.trim() !== '') {
-          bioEl.innerText = `"${userBio.trim()}"`;
-          bioEl.classList.remove('text-slate-400');
-          bioEl.classList.add('text-slate-700');
-        } else {
-          bioEl.innerText = "Este usuario no tiene descripción configurada en su perfil.";
-          bioEl.classList.remove('text-slate-700');
-          bioEl.classList.add('text-slate-400');
+        if (bioEl) {
+          if (userBio && userBio.trim() !== '') {
+            bioEl.innerText = `"${userBio.trim()}"`;
+            bioEl.classList.remove('text-slate-400');
+            bioEl.classList.add('text-slate-700');
+          } else {
+            bioEl.innerText = "Este usuario no tiene descripción configurada en su perfil.";
+            bioEl.classList.remove('text-slate-700');
+            bioEl.classList.add('text-slate-400');
+          }
         }
 
         const headImgEl = document.getElementById('avatarHeadImg');
         const bodyImgEl = document.getElementById('avatarBodyImg');
 
-        // Asignar fallback dinámico con la API nativa de Roblox si falla la carga inicial
-        headImgEl.onerror = function() {
-          this.onerror = null;
-          this.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
-        };
-        bodyImgEl.onerror = function() {
-          this.onerror = null;
-          this.src = `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
-        };
+        if (headImgEl) {
+          headImgEl.onerror = function() {
+            this.onerror = function() {
+              this.src = `https://placehold.co/150x150/f1f5f9/475569?text=${encodeURIComponent(userData.name || 'Roblox')}`;
+            };
+            this.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          };
+          headImgEl.src = currentHeadUrl;
+        }
 
-        headImgEl.src = currentHeadUrl;
-        bodyImgEl.src = currentBodyUrl;
+        if (bodyImgEl) {
+          bodyImgEl.onerror = function() {
+            this.onerror = function() {
+              this.src = `https://placehold.co/150x150/f1f5f9/475569?text=${encodeURIComponent(userData.name || 'Roblox')}`;
+            };
+            this.src = `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          };
+          bodyImgEl.src = currentBodyUrl;
+        }
 
         const verifiedBadge = document.getElementById('verifiedBadge');
-        if (userData.hasVerifiedBadge) {
-          verifiedBadge.classList.remove('hidden');
-        } else {
-          verifiedBadge.classList.add('hidden');
+        if (verifiedBadge) {
+          if (userData.hasVerifiedBadge) {
+            verifiedBadge.classList.remove('hidden');
+          } else {
+            verifiedBadge.classList.add('hidden');
+          }
         }
 
-        switchAvatarTab('head');
+        if (skeleton) skeleton.classList.add('hidden');
+        if (profileCard) profileCard.classList.remove('hidden');
+        if (btnCancelar) btnCancelar.classList.add('hidden');
 
-        // Mostrar calificación estérica si el modo rating está activo
-        if (isRatingModeActive) {
-          calcularYMostrarCalificacionEstetica(userData, creationDateIso, userBio);
+        const rouletteBadge = document.getElementById('rankingRouletteBadge');
+        const tabContainerWrapper = document.getElementById('tabContainerWrapper');
+        const extraInfoContainer = document.getElementById('extraInfoContainer');
+
+        if (isRankingModeActive) {
+          if (rouletteBadge) rouletteBadge.classList.remove('hidden');
+          if (tabContainerWrapper) tabContainerWrapper.classList.add('hidden');
+          if (extraInfoContainer) extraInfoContainer.classList.add('hidden');
+          
+          switchAvatarTab('head');
+          playSound('success');
+
+          const rouletteDisplayNumber = document.getElementById('rouletteDisplayNumber');
+          let counter = 0;
+          const maxSpins = 15;
+          
+          const rouletteInterval = setInterval(() => {
+            const randomTemp = Math.floor(Math.random() * 10) + 1;
+            if (rouletteDisplayNumber) {
+              rouletteDisplayNumber.innerText = randomTemp;
+            }
+            playSound('click');
+            counter++;
+
+            if (counter >= maxSpins) {
+              clearInterval(rouletteInterval);
+              const finalScore = Math.floor(Math.random() * 10) + 1;
+              if (rouletteDisplayNumber) {
+                rouletteDisplayNumber.innerText = `${finalScore}`;
+              }
+              playSound('success');
+
+              actualizarTickerHistorial(finalScore, userData.name || query);
+
+              rankingRedirectTimer = setTimeout(() => {
+                if (isRankingModeActive && container) {
+                  container.classList.add('hidden');
+                  if (usernameInput) {
+                    usernameInput.value = '';
+                    usernameInput.focus();
+                  }
+                  if (rouletteBadge) rouletteBadge.classList.add('hidden');
+                }
+              }, 3000);
+            }
+          }, 100);
+
         } else {
-          const ratingContainer = document.getElementById('ratingContainer');
-          if (ratingContainer) ratingContainer.classList.add('hidden');
+          if (rouletteBadge) rouletteBadge.classList.add('hidden');
+          if (tabContainerWrapper) tabContainerWrapper.classList.remove('hidden');
+          if (extraInfoContainer) extraInfoContainer.classList.remove('hidden');
+          switchAvatarTab('head');
+          playSound('success');
         }
-
-        skeleton.classList.add('hidden');
-        profileCard.classList.remove('hidden');
-        playSound('success');
 
       } catch (err) {
+        if (err.name === 'AbortError') {
+          return;
+        }
         console.error("Error al buscar usuario:", err);
-        skeleton.classList.add('hidden');
-        errorMessage.classList.remove('hidden');
+        if (skeleton) skeleton.classList.add('hidden');
+        if (errorMessage) errorMessage.classList.remove('hidden');
+        if (btnCancelar) btnCancelar.classList.add('hidden');
         playSound('error');
       } finally {
-        btnBuscar.disabled = false;
+        if (btnBuscar) btnBuscar.disabled = false;
+        if (btnCancelar) btnCancelar.classList.add('hidden');
       }
+    }
+
+    async function refrescarRostro() {
+      const refreshBtn = document.getElementById('btnRefreshHead');
+      if (refreshBtn) refreshBtn.classList.add('animate-spin');
+
+      await buscarUsuario();
+
+      setTimeout(() => {
+        if (refreshBtn) refreshBtn.classList.remove('animate-spin');
+      }, 300);
     }
 
     function copiarID() {
@@ -918,13 +1007,1036 @@
       document.body.removeChild(aux);
       
       const userIdText = document.getElementById('userIdText');
-      const originalText = userIdText.innerText;
-      userIdText.innerText = '¡Copiado!';
-      userIdText.classList.add('text-indigo-600');
+      if (userIdText) {
+        const originalText = userIdText.innerText;
+        userIdText.innerText = '¡Copiado!';
+        userIdText.classList.add('text-indigo-600');
+        setTimeout(() => {
+          userIdText.innerText = originalText;
+          userIdText.classList.remove('text-indigo-600');
+        }, 1500);
+      }
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal users Roblox</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            theme: {
+              bg: '#f8fafc',
+              card: 'rgba(255, 255, 255, 0.85)',
+              accent: '#6366f1',
+              accentHover: '#4f46e5',
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 4s ease-in-out infinite',
+            'float-delayed': 'float 5s ease-in-out 2s infinite',
+            'spin-slow': 'spin 12s linear infinite',
+            'gradient-shift': 'gradientShift 8s ease infinite',
+            'shake-crazy': 'shakeCrazy 0.15s ease-in-out infinite',
+            'crazy-all': 'crazyAll 0.6s ease-in-out infinite alternate',
+            'crazy-spin': 'crazySpin 1.5s linear infinite',
+            'crazy-bounce': 'crazyBounce 0.4s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            gradientShift: {
+              '0%, 100%': { 'background-position': '0% 50%' },
+              '50%': { 'background-position': '100% 50%' }
+            },
+            shakeCrazy: {
+              '0%, 100%': { transform: 'translate(0, 0) rotate(0deg)' },
+              '20%': { transform: 'translate(-8px, 8px) rotate(-6deg)' },
+              '40%': { transform: 'translate(8px, -6px) rotate(6deg)' },
+              '60%': { transform: 'translate(-6px, -6px) rotate(-4deg)' },
+              '80%': { transform: 'translate(6px, 6px) rotate(4deg)' }
+            },
+            crazyAll: {
+              '0%': { transform: 'scale(1) rotate(-3deg) skew(2deg)', filter: 'hue-rotate(0deg)' },
+              '100%': { transform: 'scale(1.05) rotate(3deg) skew(-2deg)', filter: 'hue-rotate(360deg)' }
+            },
+            crazySpin: {
+              '0%': { transform: 'rotate(0deg) scale(1)' },
+              '50%': { transform: 'rotate(180deg) scale(1.15)' },
+              '100%': { transform: 'rotate(360deg) scale(1)' }
+            },
+            crazyBounce: {
+              '0%': { transform: 'translateY(0) scale(1)' },
+              '100%': { transform: 'translateY(-20px) scale(1.1)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Gradient mesh background dinámico animado */
+    .bg-mesh {
+      background-color: #f1f5f9;
+      background-size: 200% 200%;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(20, 184, 166, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.18) 0px, transparent 50%);
+      animation: gradientShift 10s ease infinite;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 10px 30px -5px rgba(51, 65, 85, 0.08), 0 4px 6px -2px rgba(51, 65, 85, 0.04);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.12);
+    }
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(203, 213, 225, 0.8);
+    }
+    
+    .glass-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.28);
+    }
+
+    /* Estilos para el modo Ranking */
+    body.ranking-crazy-mode {
+      background: #0f172a;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.15) 50%, transparent 100%);
+      animation: gradientShift 15s ease infinite;
+      color: #f8fafc;
+    }
+
+    body.ranking-crazy-mode .glass-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 20px 50px -10px rgba(99, 102, 241, 0.3);
+    }
+
+    body.ranking-crazy-mode .glass-input {
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+    }
+
+    body.ranking-crazy-mode h2, body.ranking-crazy-mode h3, body.ranking-crazy-mode h4 {
+      color: #ffffff;
+    }
+
+    body.ranking-crazy-mode p {
+      color: #cbd5e1;
+    }
+
+    body.ranking-crazy-mode img {
+      animation: float 4s ease-in-out infinite !important;
+      border: 4px solid rgba(168, 85, 247, 0.6) !important;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-mesh text-slate-700 min-h-screen flex flex-col justify-between selection:bg-indigo-200 selection:text-slate-800 antialiased font-sans">
+
+  <!-- Header Header -->
+  <header class="w-full max-w-5xl mx-auto px-4 py-6 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <!-- Icono de Mundo interactivo que abre/cierra el menú -->
+      <div class="relative group">
+        <button 
+          onclick="toggleStarMenu()" 
+          class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-teal-400 flex items-center justify-center shadow-md shadow-indigo-200/50 border border-white hover:scale-105 transition-all duration-300 active:scale-95 cursor-pointer"
+          title="Tocar para mostrar opciones de navegación"
+        >
+          <i id="globeIcon" data-lucide="globe" class="w-6 h-6 text-white animate-spin-slow transition-all"></i>
+        </button>
+
+        <!-- Menú Desplegable con Ranking e Inicio -->
+        <div id="starMenu" class="hidden absolute top-14 left-0 z-50 bg-white/95 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-xl flex flex-col space-y-1.5 animate-bounce">
+          <button 
+            onclick="irARanking()" 
+            class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white shadow-md transition-all font-extrabold text-xs"
+            title="Ir a Calificación de Avatares"
+          >
+            <i data-lucide="award" class="w-4 h-4 text-white animate-bounce"></i>
+            <span>Ranking</span>
+          </button>
+
+          <button 
+            onclick="irAInicio()" 
+            class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all font-bold text-xs"
+            title="Volver al Inicio"
+          >
+            <i data-lucide="home" class="w-4 h-4 text-slate-600"></i>
+            <span>Inicio</span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <h1 id="appTitle" class="font-extrabold text-lg leading-none bg-gradient-to-r from-indigo-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">Universal users Roblox</h1>
+        <p id="appSubtitle" class="text-xs text-slate-500 font-medium">Avatar & Profile Explorer</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center space-x-2.5">
+      <button 
+        id="btnDonaciones" 
+        onclick="abrirDonacion()" 
+        class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white border border-emerald-300/50 shadow-md shadow-emerald-200 hover:scale-105 transition-all active:scale-95 cursor-pointer"
+        title="Apoyar el proyecto con 40 Robux / Gamepass"
+      >
+        <i data-lucide="heart" class="w-3.5 h-3.5 text-white fill-white animate-pulse"></i>
+        <span>Donación</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Banner de Agradecimiento por Donación -->
+  <div id="thankYouBanner" class="w-full max-w-xl mx-auto px-4 mb-3 hidden">
+    <div class="glass-card rounded-2xl p-4 border-emerald-300/80 bg-emerald-50/90 flex items-center justify-between shadow-lg animate-bounce">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md">
+          <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="text-sm font-extrabold text-slate-800">¡Muchas Gracias por tu Donación! 🎉</h4>
+          <p class="text-xs text-emerald-700 font-medium">Hemos detectado tu apoyo. ¡Agradecemos enormemente tus 40 Robux donados!</p>
+        </div>
+      </div>
+      <button onclick="cerrarBannerDonacion()" class="text-slate-400 hover:text-slate-700 p-1 transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="w-full max-w-xl mx-auto px-4 py-4 my-auto">
+    
+    <!-- Hero / Search Box Container -->
+    <div id="mainHeroContainer" class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden mb-6 transition-all">
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-200/50 rounded-full blur-3xl pointer-events-none animate-float"></div>
+      <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-teal-200/50 rounded-full blur-3xl pointer-events-none animate-float-delayed"></div>
+
+      <div class="text-center mb-6">
+        <h2 id="mainHeadingTitle" class="text-2xl font-extrabold tracking-tight text-slate-800 mb-2">Buscar Perfil de Roblox</h2>
+        <p id="mainHeadingDesc" class="text-sm text-slate-500 mb-3">Ingresa cualquier <span class="text-indigo-600 font-semibold">@username</span> o nombre de usuario para obtener detalles.</p>
+        
+        <!-- Historial horizontal -->
+        <div id="scoreHistoryTickerContainer" class="hidden w-full overflow-hidden bg-slate-900/60 rounded-2xl py-2 px-3 border border-purple-500/40 relative">
+          <div class="flex whitespace-nowrap animate-[marquee_15s_linear_infinite] space-x-4 items-center" id="scoreHistoryTickerContent">
+            <span class="text-xs text-purple-300 font-bold">Historial de Puntajes Recientes:</span>
+            <span class="text-xs text-amber-300 font-mono bg-purple-900/80 px-2 py-0.5 rounded-lg border border-purple-400">Ningún tiro aún</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative flex items-center">
+        <div class="absolute left-4 text-indigo-400 pointer-events-none">
+          <i data-lucide="user-search" class="w-5 h-5"></i>
+        </div>
+        <input 
+          type="text" 
+          id="usernameInput" 
+          placeholder="Ej. darwinrbxtik, Roblox, Builderman..." 
+          class="glass-input w-full pl-12 pr-44 py-3.5 rounded-2xl text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 font-medium"
+          onkeypress="if(event.key==='Enter') buscarUsuario()"
+          autocomplete="off"
+        >
+        <div class="absolute right-2 flex items-center space-x-1">
+          <button 
+            id="btnCancelar" 
+            onclick="cancelarBusqueda()" 
+            class="hidden px-2.5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs shadow-md transition-all active:scale-95"
+            title="Cancelar búsqueda"
+          >
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+
+          <button 
+            id="btnBuscar" 
+            onclick="buscarUsuario()" 
+            class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-teal-500 hover:from-indigo-600 hover:to-teal-600 text-white font-bold text-xs md:text-sm shadow-md shadow-indigo-200 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
+          >
+            <span>Buscar</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center space-x-2 mt-4 text-xs font-semibold text-slate-500">
+        <span class="inline-flex items-center space-x-1 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200/70 shadow-sm animate-pulse-slow">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500 mr-1 animate-spin-slow"></i>
+          <span>Creado por darwinrbxtik</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Result Area -->
+    <div id="resultadoContainer" class="hidden">
+      <div id="skeleton" class="glass-card rounded-3xl p-6 shadow-xl animate-pulse hidden">
+        <div class="flex flex-col items-center">
+          <div class="w-28 h-28 rounded-full bg-slate-200/80 mb-4"></div>
+          <div class="h-5 bg-slate-200/80 rounded-lg w-40 mb-2"></div>
+          <div class="h-4 bg-slate-200/80 rounded-lg w-24 mb-6"></div>
+          <div class="w-full grid grid-cols-2 gap-3 mb-3">
+            <div class="h-16 bg-slate-200/80 rounded-2xl"></div>
+            <div class="h-16 bg-slate-200/80 rounded-2xl"></div>
+          </div>
+          <div class="w-full h-24 bg-slate-200/80 rounded-2xl"></div>
+        </div>
+      </div>
+
+      <div id="errorMessage" class="glass-card rounded-3xl p-6 text-center border-rose-200 bg-rose-50/80 hidden">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center mx-auto mb-3 shadow-inner animate-bounce">
+          <i data-lucide="alert-circle" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-800 mb-1" id="errorTitle">Usuario no encontrado</h3>
+        <p class="text-xs text-slate-500" id="errorDesc">Verifica que el nombre de usuario esté bien escrito e intenta nuevamente.</p>
+      </div>
+
+      <!-- Profile Result Card -->
+      <div id="profileCard" class="glass-card rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden hidden border border-white transition-all duration-500">
+        
+        <div id="tabContainerWrapper" class="flex justify-center mb-6">
+          <div class="bg-slate-100/90 p-1 rounded-2xl border border-slate-200/80 flex space-x-1 text-xs font-bold shadow-inner items-center">
+            <button id="btnTabHead" onclick="switchAvatarTab('head')" class="px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95">
+              <i data-lucide="smile" class="w-3.5 h-3.5"></i>
+              <span>Rostro</span>
+            </button>
+            <button id="btnTabBody" onclick="switchAvatarTab('body')" class="px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95">
+              <i data-lucide="user" class="w-3.5 h-3.5"></i>
+              <span>Cuerpo Completo</span>
+            </button>
+            <button 
+              id="btnRefreshHead" 
+              onclick="refrescarRostro()" 
+              class="px-2.5 py-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-white/80 transition-all active:scale-90"
+              title="Volver a buscar y refrescar información del usuario"
+            >
+              <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Avatar Container -->
+        <div class="flex flex-col items-center text-center">
+          
+          <div id="rankingRouletteBadge" class="mb-4 z-30 hidden">
+            <div class="px-6 py-2.5 rounded-3xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 text-white font-black text-2xl md:text-3xl shadow-2xl border-4 border-yellow-300 animate-bounce">
+              ⭐ <span id="rouletteDisplayNumber">?</span>/10 ⭐
+            </div>
+          </div>
+
+          <div class="relative group mb-4">
+            <div class="absolute inset-0 bg-gradient-to-tr from-indigo-400 to-teal-400 rounded-full blur-xl group-hover:scale-110 transition-all opacity-50 animate-pulse-slow"></div>
+            
+            <img 
+              id="avatarHeadImg" 
+              src="" 
+              alt="Avatar Headshot" 
+              referrerpolicy="no-referrer"
+              class="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white bg-slate-100 object-cover relative z-10 shadow-lg transition-transform duration-300 group-hover:scale-105"
+              onerror="this.onerror=null; this.src='https://placehold.co/150x150/f1f5f9/475569?text=Roblox';"
+            >
+            
+            <img 
+              id="avatarBodyImg" 
+              src="" 
+              alt="Avatar Full Body" 
+              referrerpolicy="no-referrer"
+              class="w-48 h-64 md:w-56 md:h-72 object-contain relative z-10 hidden drop-shadow-2xl transition-transform duration-300 hover:scale-105"
+              onerror="this.onerror=null; this.src='https://placehold.co/150x150/f1f5f9/475569?text=Roblox';"
+            >
+
+            <div id="verifiedBadge" class="absolute bottom-1 right-1 z-20 w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center justify-center border-2 border-white shadow-md hidden animate-bounce" title="Cuenta Verificada">
+              <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="flex items-center justify-center space-x-1.5">
+              <h3 id="userDisplayName" class="text-xl md:text-2xl font-extrabold text-slate-800">---</h3>
+            </div>
+            <p id="userUsername" class="text-sm text-indigo-600 font-bold">@---</p>
+          </div>
+
+          <!-- Extra Info Sections -->
+          <div id="extraInfoContainer" class="w-full space-y-3">
+            <div class="w-full grid grid-cols-2 gap-3">
+              <div class="bg-white/90 border border-slate-200/70 rounded-2xl p-3 text-left shadow-sm hover:border-indigo-200 transition-colors">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block mb-0.5">User ID</span>
+                <div class="flex items-center justify-between">
+                  <span id="userIdText" class="font-mono text-sm font-bold text-slate-700">000000</span>
+                  <button onclick="copiarID()" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 active:scale-90" title="Copiar ID">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-white/90 border border-slate-200/70 rounded-2xl p-3 text-left shadow-sm hover:border-indigo-200 transition-colors">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block mb-0.5">Perfil Oficial</span>
+                <a id="profileLink" href="#" target="_blank" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 hover:underline flex items-center space-x-1 truncate">
+                  <span>Ver en Roblox</span>
+                  <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+              </div>
+            </div>
+
+            <div class="w-full bg-white/90 border border-slate-200/70 rounded-2xl p-3.5 text-left shadow-sm flex items-center justify-between hover:border-indigo-200 transition-colors">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
+                  <i data-lucide="calendar" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block">Fecha de Creación</span>
+                  <span id="userCreatedDate" class="text-xs md:text-sm font-bold text-slate-700">---</span>
+                </div>
+              </div>
+              <span id="userAccountAge" class="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
+                - años
+              </span>
+            </div>
+
+            <div class="w-full bg-white/90 border border-slate-200/70 rounded-2xl p-4 text-left shadow-sm hover:border-indigo-200 transition-colors">
+              <div class="flex items-center space-x-2 mb-2">
+                <i data-lucide="file-text" class="w-4 h-4 text-indigo-500"></i>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-extrabold block">Descripción de la cuenta</span>
+              </div>
+              <p id="userBioText" class="text-xs text-slate-600 font-medium leading-relaxed italic bg-slate-50/80 p-3 rounded-xl border border-slate-100 max-h-32 overflow-y-auto">
+                Sin descripción disponible.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Profesional -->
+  <footer class="w-full max-w-5xl mx-auto px-4 py-6 text-center text-xs text-slate-500 font-medium space-y-1">
+    <p class="font-bold text-slate-700">Universal users Roblox</p>
+    <p class="text-slate-400">Plataforma de inteligencia de avatares y análisis de perfiles en tiempo real.</p>
+  </footer>
+
+  <!-- Web Audio Synthesizer -->
+  <script>
+    const GAMEPASS_DONATION_URL = "https://www.roblox.com/es/game-pass/1462809033/Blackhole-pack";
+
+    function abrirDonacion() {
+      playSound('click');
+      localStorage.setItem('pending_roblox_donation', 'true');
+      window.open(GAMEPASS_DONATION_URL, '_blank');
+    }
+
+    function verificarDonacionRealizada() {
+      if (localStorage.getItem('pending_roblox_donation') === 'true') {
+        localStorage.removeItem('pending_roblox_donation');
+        const banner = document.getElementById('thankYouBanner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          playSound('success');
+        }
+      }
+    }
+
+    function cerrarBannerDonacion() {
+      playSound('click');
+      const banner = document.getElementById('thankYouBanner');
+      if (banner) banner.classList.add('hidden');
+    }
+
+    window.addEventListener('focus', verificarDonacionRealizada);
+    window.addEventListener('load', verificarDonacionRealizada);
+
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(900, now + 0.05);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'success') {
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, index) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const startTime = now + (index * 0.05);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.25, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(startTime);
+            osc.stop(startTime + 0.18);
+          });
+        } else if (type === 'error') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'copy') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(1320, now + 0.04);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        }
+      } catch (e) {
+        console.warn("Audio error non-critical:", e);
+      }
+    }
+  </script>
+
+  <!-- Script Principal -->
+  <script>
+    lucide.createIcons();
+
+    let currentUserId = null;
+    let currentHeadUrl = '';
+    let currentBodyUrl = '';
+    let isRankingModeActive = false;
+    let rankingRedirectTimer = null;
+    let activeFetchController = null;
+    let recentScoresHistory = [];
+    const searchCache = new Map();
+
+    if (!document.getElementById('tickerStyle')) {
+      const styleEl = document.createElement('style');
+      styleEl.id = 'tickerStyle';
+      styleEl.innerHTML = `
+        @keyframes marquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+      `;
+      document.head.appendChild(styleEl);
+    }
+
+    function toggleStarMenu() {
+      playSound('click');
+      const starMenu = document.getElementById('starMenu');
+      if (starMenu) {
+        starMenu.classList.toggle('hidden');
+      }
+    }
+
+    function irARanking() {
+      playSound('success');
+      isRankingModeActive = true;
+      
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      document.body.classList.add('ranking-crazy-mode');
+
+      const starMenu = document.getElementById('starMenu');
+      if (starMenu) starMenu.classList.add('hidden');
+
+      const mainHeadingTitle = document.getElementById('mainHeadingTitle');
+      const mainHeadingDesc = document.getElementById('mainHeadingDesc');
+      const tickerContainer = document.getElementById('scoreHistoryTickerContainer');
+
+      if (mainHeadingTitle) mainHeadingTitle.innerText = "✨ Calificación de Avatares ✨";
+      if (mainHeadingDesc) mainHeadingDesc.innerHTML = "Busca un usuario para ver su avatar y el puntaje de la ruleta del <span class='text-indigo-400 font-semibold'>1 al 10</span>.";
+      if (tickerContainer) tickerContainer.classList.remove('hidden');
+
+      document.getElementById('resultadoContainer').classList.add('hidden');
+      document.getElementById('usernameInput').value = '';
+      document.getElementById('usernameInput').focus();
+    }
+
+    function irAInicio() {
+      playSound('click');
+      isRankingModeActive = false;
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      document.body.classList.remove('ranking-crazy-mode');
+
+      const starMenu = document.getElementById('starMenu');
+      if (starMenu) starMenu.classList.add('hidden');
+
+      const mainHeadingTitle = document.getElementById('mainHeadingTitle');
+      const mainHeadingDesc = document.getElementById('mainHeadingDesc');
+      const tickerContainer = document.getElementById('scoreHistoryTickerContainer');
+
+      if (mainHeadingTitle) mainHeadingTitle.innerText = "Buscar Perfil de Roblox";
+      if (mainHeadingDesc) mainHeadingDesc.innerHTML = "Ingresa cualquier <span class='text-indigo-600 font-semibold'>@username</span> o nombre de usuario para obtener detalles.";
+      if (tickerContainer) tickerContainer.classList.add('hidden');
+
+      document.getElementById('resultadoContainer').classList.add('hidden');
+      document.getElementById('usernameInput').value = '';
+    }
+
+    function actualizarTickerHistorial(nuevoPuntaje, username) {
+      recentScoresHistory.unshift(`${username}: ${nuevoPuntaje}/10`);
+      if (recentScoresHistory.length > 10) recentScoresHistory.pop();
+
+      const contentEl = document.getElementById('scoreHistoryTickerContent');
+      if (contentEl) {
+        let html = `<span class="text-xs text-purple-300 font-bold shrink-0">⭐ Historial:</span>`;
+        recentScoresHistory.forEach(item => {
+          html += `<span class="text-xs text-amber-300 font-mono bg-purple-900/80 px-2 py-0.5 rounded-lg border border-purple-400 shrink-0">${item}</span>`;
+        });
+        contentEl.innerHTML = html;
+      }
+    }
+
+    function cancelarBusqueda() {
+      playSound('error');
+      if (activeFetchController) {
+        activeFetchController.abort();
+        activeFetchController = null;
+      }
+
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      const skeleton = document.getElementById('skeleton');
+      const container = document.getElementById('resultadoContainer');
+      const btnBuscar = document.getElementById('btnBuscar');
+      const btnCancelar = document.getElementById('btnCancelar');
+
+      if (skeleton) skeleton.classList.add('hidden');
+      if (container) container.classList.add('hidden');
+      if (btnBuscar) btnBuscar.disabled = false;
+      if (btnCancelar) btnCancelar.classList.add('hidden');
+    }
+
+    function switchAvatarTab(tab) {
+      playSound('click');
+      const btnHead = document.getElementById('btnTabHead');
+      const btnBody = document.getElementById('btnTabBody');
+      const imgHead = document.getElementById('avatarHeadImg');
+      const imgBody = document.getElementById('avatarBodyImg');
+      const extraInfo = document.getElementById('extraInfoContainer');
+
+      if (tab === 'head') {
+        if (btnHead) btnHead.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
+        if (btnBody) btnBody.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
+        if (imgHead) imgHead.classList.remove('hidden');
+        if (imgBody) imgBody.classList.add('hidden');
+        if (!isRankingModeActive && extraInfo) extraInfo.classList.remove('hidden');
+      } else {
+        if (btnBody) btnBody.className = "px-4 py-2 rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center space-x-1.5 active:scale-95";
+        if (btnHead) btnHead.className = "px-4 py-2 rounded-xl text-slate-500 hover:text-indigo-600 transition-all flex items-center space-x-1.5 active:scale-95";
+        if (imgBody) imgBody.classList.remove('hidden');
+        if (imgHead) imgHead.classList.add('hidden');
+        if (extraInfo) extraInfo.classList.add('hidden');
+      }
+    }
+
+    function formatCreationDate(isoString) {
+      if (!isoString) return { formatted: 'Desconocido', age: '' };
+      try {
+        const date = new Date(isoString);
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formatted = date.toLocaleDateString('es-ES', options);
+
+        const diffMs = Date.now() - date.getTime();
+        const ageYears = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
+        const ageText = ageYears === 1 ? '1 año' : `${ageYears} años`;
+
+        return { formatted, age: ageText };
+      } catch (e) {
+        return { formatted: isoString, age: '' };
+      }
+    }
+
+    async function fetchWithRetry(url, options = {}, retries = 3, delay = 500) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const res = await fetch(url, options);
+          if (res.ok) return res;
+          if (res.status === 429 && i < retries - 1) {
+            await new Promise(r => setTimeout(r, delay * (i + 1)));
+            continue;
+          }
+          return res;
+        } catch (err) {
+          if (err.name === 'AbortError') throw err;
+          if (i === retries - 1) throw err;
+          await new Promise(r => setTimeout(r, delay * (i + 1)));
+        }
+      }
+      throw new Error('Network request failed after retries');
+    }
+
+    async function buscarUsuario() {
+      playSound('click');
+      const usernameInput = document.getElementById('usernameInput');
+      if (!usernameInput) return;
+      const query = usernameInput.value.trim();
+
+      if (!query) return;
+
+      if (rankingRedirectTimer) clearTimeout(rankingRedirectTimer);
+
+      activeFetchController = new AbortController();
+      const signal = activeFetchController.signal;
+
+      const container = document.getElementById('resultadoContainer');
+      const skeleton = document.getElementById('skeleton');
+      const errorMessage = document.getElementById('errorMessage');
+      const profileCard = document.getElementById('profileCard');
+      const btnBuscar = document.getElementById('btnBuscar');
+      const btnCancelar = document.getElementById('btnCancelar');
+
+      if (container) container.classList.remove('hidden');
+      if (skeleton) skeleton.classList.remove('hidden');
+      if (errorMessage) errorMessage.classList.add('hidden');
+      if (profileCard) profileCard.classList.add('hidden');
+      if (btnBuscar) btnBuscar.disabled = true;
+      if (btnCancelar) btnCancelar.classList.remove('hidden');
+
+      try {
+        let userData = null;
+        const cacheKey = query.toLowerCase();
+
+        if (searchCache.has(cacheKey)) {
+          userData = searchCache.get(cacheKey);
+        } else {
+          try {
+            const resSearch = await fetchWithRetry(`https://users.roproxy.com/v1/users/search?keyword=${encodeURIComponent(query)}&limit=10`, { signal });
+            if (resSearch.ok) {
+              const dataSearch = await resSearch.json();
+              if (dataSearch.data && dataSearch.data.length > 0) {
+                const exactMatch = dataSearch.data.find(u => u.name.toLowerCase() === query.toLowerCase() || u.displayName.toLowerCase() === query.toLowerCase());
+                userData = exactMatch || dataSearch.data[0];
+              }
+            }
+          } catch (e) {
+            if (e.name === 'AbortError') throw e;
+          }
+
+          if (!userData) {
+            try {
+              const targetUrl = `https://users.roblox.com/v1/usernames/users`;
+              const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+              
+              const resPost = await fetchWithRetry(proxyUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usernames: [query], excludeBannedUsers: false }),
+                signal
+              });
+
+              if (resPost.ok) {
+                const proxyData = await resPost.json();
+                const parsed = JSON.parse(proxyData.contents);
+                if (parsed.data && parsed.data.length > 0) {
+                  userData = parsed.data[0];
+                }
+              }
+            } catch (e) {
+              if (e.name === 'AbortError') throw e;
+            }
+          }
+
+          if (!userData && !isNaN(query)) {
+            try {
+              const resId = await fetchWithRetry(`https://users.roproxy.com/v1/users/${query}`, { signal });
+              if (resId.ok) {
+                userData = await resId.json();
+              }
+            } catch (e) {
+              if (e.name === 'AbortError') throw e;
+            }
+          }
+
+          if (userData && userData.id) {
+            searchCache.set(cacheKey, userData);
+          }
+        }
+
+        if (!userData || !userData.id) {
+          throw new Error('Usuario no encontrado');
+        }
+
+        currentUserId = userData.id;
+
+        let creationDateIso = userData.created || null;
+        let userBio = userData.description || null;
+
+        try {
+          const resDetails = await fetchWithRetry(`https://users.roproxy.com/v1/users/${currentUserId}`, { signal });
+          if (resDetails.ok) {
+            const detailsData = await resDetails.json();
+            creationDateIso = detailsData.created || creationDateIso;
+            userBio = detailsData.description !== undefined ? detailsData.description : userBio;
+          }
+        } catch (e) {
+          if (e.name === 'AbortError') throw e;
+        }
+
+        try {
+          const [resHead, resBody] = await Promise.all([
+            fetchWithRetry(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`, { signal }),
+            fetchWithRetry(`https://thumbnails.roproxy.com/v1/users/avatar?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`, { signal })
+          ]);
+          
+          const dataHead = await resHead.json();
+          const dataBody = await resBody.json();
+
+          const rawHeadUrl = dataHead.data?.[0]?.imageUrl;
+          const rawBodyUrl = dataBody.data?.[0]?.imageUrl;
+
+          currentHeadUrl = rawHeadUrl || `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          currentBodyUrl = rawBodyUrl || `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+        } catch (e) {
+          if (e.name === 'AbortError') throw e;
+          currentHeadUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          currentBodyUrl = `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+        }
+
+        const dispNameEl = document.getElementById('userDisplayName');
+        const userUsrEl = document.getElementById('userUsername');
+        const userIdEl = document.getElementById('userIdText');
+        const profileLinkEl = document.getElementById('profileLink');
+
+        if (dispNameEl) dispNameEl.innerText = userData.displayName || userData.name || query;
+        if (userUsrEl) userUsrEl.innerText = `@${userData.name || query}`;
+        if (userIdEl) userIdEl.innerText = currentUserId;
+        if (profileLinkEl) profileLinkEl.href = `https://www.roblox.com/users/${currentUserId}/profile`;
+        
+        const dateInfo = formatCreationDate(creationDateIso);
+        const createdDateEl = document.getElementById('userCreatedDate');
+        const accountAgeEl = document.getElementById('userAccountAge');
+        if (createdDateEl) createdDateEl.innerText = dateInfo.formatted;
+        if (accountAgeEl) accountAgeEl.innerText = dateInfo.age ? dateInfo.age : 'Roblox';
+
+        const bioEl = document.getElementById('userBioText');
+        if (bioEl) {
+          if (userBio && userBio.trim() !== '') {
+            bioEl.innerText = `"${userBio.trim()}"`;
+            bioEl.classList.remove('text-slate-400');
+            bioEl.classList.add('text-slate-700');
+          } else {
+            bioEl.innerText = "Este usuario no tiene descripción configurada en su perfil.";
+            bioEl.classList.remove('text-slate-700');
+            bioEl.classList.add('text-slate-400');
+          }
+        }
+
+        const headImgEl = document.getElementById('avatarHeadImg');
+        const bodyImgEl = document.getElementById('avatarBodyImg');
+
+        if (headImgEl) {
+          headImgEl.onerror = function() {
+            this.onerror = function() {
+              this.src = `https://placehold.co/150x150/f1f5f9/475569?text=${encodeURIComponent(userData.name || 'Roblox')}`;
+            };
+            this.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          };
+          headImgEl.src = currentHeadUrl;
+        }
+
+        if (bodyImgEl) {
+          bodyImgEl.onerror = function() {
+            this.onerror = function() {
+              this.src = `https://placehold.co/150x150/f1f5f9/475569?text=${encodeURIComponent(userData.name || 'Roblox')}`;
+            };
+            this.src = `https://www.roblox.com/avatar-thumbnail/image?userId=${currentUserId}&width=420&height=420&format=png`;
+          };
+          bodyImgEl.src = currentBodyUrl;
+        }
+
+        const verifiedBadge = document.getElementById('verifiedBadge');
+        if (verifiedBadge) {
+          if (userData.hasVerifiedBadge) {
+            verifiedBadge.classList.remove('hidden');
+          } else {
+            verifiedBadge.classList.add('hidden');
+          }
+        }
+
+        if (skeleton) skeleton.classList.add('hidden');
+        if (profileCard) profileCard.classList.remove('hidden');
+        if (btnCancelar) btnCancelar.classList.add('hidden');
+
+        const rouletteBadge = document.getElementById('rankingRouletteBadge');
+        const tabContainerWrapper = document.getElementById('tabContainerWrapper');
+        const extraInfoContainer = document.getElementById('extraInfoContainer');
+
+        if (isRankingModeActive) {
+          if (rouletteBadge) rouletteBadge.classList.remove('hidden');
+          if (tabContainerWrapper) tabContainerWrapper.classList.add('hidden');
+          if (extraInfoContainer) extraInfoContainer.classList.add('hidden');
+          
+          switchAvatarTab('head');
+          playSound('success');
+
+          const rouletteDisplayNumber = document.getElementById('rouletteDisplayNumber');
+          let counter = 0;
+          const maxSpins = 15;
+          
+          const rouletteInterval = setInterval(() => {
+            const randomTemp = Math.floor(Math.random() * 10) + 1;
+            if (rouletteDisplayNumber) {
+              rouletteDisplayNumber.innerText = randomTemp;
+            }
+            playSound('click');
+            counter++;
+
+            if (counter >= maxSpins) {
+              clearInterval(rouletteInterval);
+              const finalScore = Math.floor(Math.random() * 10) + 1;
+              if (rouletteDisplayNumber) {
+                rouletteDisplayNumber.innerText = `${finalScore}`;
+              }
+              playSound('success');
+
+              actualizarTickerHistorial(finalScore, userData.name || query);
+
+              rankingRedirectTimer = setTimeout(() => {
+                if (isRankingModeActive && container) {
+                  container.classList.add('hidden');
+                  if (usernameInput) {
+                    usernameInput.value = '';
+                    usernameInput.focus();
+                  }
+                  if (rouletteBadge) rouletteBadge.classList.add('hidden');
+                }
+              }, 3000);
+            }
+          }, 100);
+
+        } else {
+          if (rouletteBadge) rouletteBadge.classList.add('hidden');
+          if (tabContainerWrapper) tabContainerWrapper.classList.remove('hidden');
+          if (extraInfoContainer) extraInfoContainer.classList.remove('hidden');
+          switchAvatarTab('head');
+          playSound('success');
+        }
+
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return;
+        }
+        console.error("Error al buscar usuario:", err);
+        if (skeleton) skeleton.classList.add('hidden');
+        if (errorMessage) errorMessage.classList.remove('hidden');
+        if (btnCancelar) btnCancelar.classList.add('hidden');
+        playSound('error');
+      } finally {
+        if (btnBuscar) btnBuscar.disabled = false;
+        if (btnCancelar) btnCancelar.classList.add('hidden');
+      }
+    }
+
+    async function refrescarRostro() {
+      const refreshBtn = document.getElementById('btnRefreshHead');
+      if (refreshBtn) refreshBtn.classList.add('animate-spin');
+
+      await buscarUsuario();
+
       setTimeout(() => {
-        userIdText.innerText = originalText;
-        userIdText.classList.remove('text-indigo-600');
-      }, 1500);
+        if (refreshBtn) refreshBtn.classList.remove('animate-spin');
+      }, 300);
+    }
+
+    function copiarID() {
+      if (!currentUserId) return;
+      playSound('copy');
+      const aux = document.createElement("input");
+      aux.setAttribute("value", currentUserId);
+      document.body.appendChild(aux);
+      aux.select();
+      document.execCommand("copy");
+      document.body.removeChild(aux);
+      
+      const userIdText = document.getElementById('userIdText');
+      if (userIdText) {
+        const originalText = userIdText.innerText;
+        userIdText.innerText = '¡Copiado!';
+        userIdText.classList.add('text-indigo-600');
+        setTimeout(() => {
+          userIdText.innerText = originalText;
+          userIdText.classList.remove('text-indigo-600');
+        }, 1500);
+      }
     }
   </script>
 </body>
